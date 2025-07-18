@@ -1,3 +1,4 @@
+
 'use client'
 
 import type { CalculationResults } from "@/types";
@@ -37,11 +38,14 @@ const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) =
     if (active && payload && payload.length) {
       const data = payload[0];
       const unit = data.unit || '';
+      const formattedValue = unit === '€'
+        ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(data.value as number)
+        : `${formatNumber(data.value as number)} ${unit}`;
       return (
         <div className="rounded-lg border bg-background p-2 shadow-sm">
           <div className="flex justify-between items-center gap-4">
               <span style={{color: data.payload.fill}}>{data.name}:</span>
-              <span className="font-bold">{unit === '€' ? formatCurrency(data.value as number) : `${formatNumber(data.value as number)} ${unit}`}</span>
+              <span className="font-bold">{formattedValue}</span>
           </div>
         </div>
       );
@@ -149,7 +153,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                     strokeWidth={2}
                 >
                     {data.map((entry, index) => {
-                      const color = entry.name.toLowerCase() === 'béton' 
+                      const color = entry.name.toLowerCase() === 'beton'
                         ? BETON_COLOR
                         : PIE_COLORS[index % PIE_COLORS.length];
                       return <Cell key={`cell-${index}`} fill={color} />

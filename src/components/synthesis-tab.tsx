@@ -111,6 +111,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       coutGlobal: cout.totalClassique,
       carboneTotal: carbone.totalClassique,
       economieCarbone: 0,
+      economieCarbonePct: 0,
       surcout: 0,
       amortissement: -1,
     },
@@ -119,6 +120,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       coutGlobal: cout.coutGlobalMixteAjuste,
       carboneTotal: carbone.totalMixte,
       economieCarbone: carbone.economieTCO2Mixte,
+      economieCarbonePct: carbone.totalClassique > 0 ? (carbone.economieTCO2Mixte / carbone.totalClassique) * 100 : 0,
       surcout: cout.surcoutMixte,
       amortissement: amortissementMixte,
     },
@@ -127,6 +129,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       coutGlobal: cout.coutGlobalEcoAjuste,
       carboneTotal: carbone.totalEco,
       economieCarbone: carbone.economieTCO2,
+      economieCarbonePct: carbone.totalClassique > 0 ? (carbone.economieTCO2 / carbone.totalClassique) * 100 : 0,
       surcout: cout.surcout,
       amortissement: amortissement,
     },
@@ -192,7 +195,11 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                             <TableCell>{item.name}</TableCell>
                             <TableCell className="text-right">{formatCurrency(item.coutGlobal)}</TableCell>
                             <TableCell className="text-right">{formatNumber(item.carboneTotal)} tCO₂</TableCell>
-                            <TableCell className="text-right">{formatNumber(item.economieCarbone)} tCO₂</TableCell>
+                            <TableCell className="text-right">
+                                {item.name === 'Classique' 
+                                 ? `0 tCO₂` 
+                                 : `${formatNumber(item.economieCarbone)} tCO₂ (${formatNumber(item.economieCarbonePct)}%)`}
+                            </TableCell>
                             <TableCell className="text-right">{formatCurrency(item.surcout)}</TableCell>
                             <TableCell className="text-right">
                                 {item.amortissement > 0 ? `${formatNumber(item.amortissement)} ans` : <Badge variant="secondary">N/A</Badge>}

@@ -28,6 +28,7 @@ export const defaultSimulationState: SimulationState = {
   prixKmCamionElectrique: 1.2,
   prixKmVoitureEssence: 0.5,
   prixKmVoitureElectrique: 0.3,
+  prixKmAutobusEssence: 1.2,
   prixKmAutobusElectrique: 1.0,
 
   // CO2 Emissions (in tonnes CO2)
@@ -43,6 +44,7 @@ export const defaultSimulationState: SimulationState = {
   pctEcoAcier: 50,
   pctEcoCuivre: 50,
   pctEcoEnrobes: 50,
+  pctEcoDeplacements: 50,
 };
 
 // Carbon footprints (in T eq CO₂ / unit)
@@ -57,8 +59,9 @@ export const carbonFootprints = {
   enrobeFroid: 0.02, // T CO2 / m³ (assuming density ~1 t/m³)
   camionDiesel: 0.25 / 1000, // T CO2 / km, converting from kg to t
   camionElectrique: 0.05 / 1000, // T CO2 / km
-  voitureEssence: 0.18 / 1000, // T CO2 / km
-  voitureElectrique: 0.02 / 1000, // T CO2 / km
-  autobusElectrique: 0.03 / 1000, // T CO2 / km
+  voitureEssence: 250 / 1000000, // 250g/km -> t/km
+  voitureElectrique: 100 / 1000000, // 100g/km -> t/km
+  autobusEssence: 133 / 1000000, // 133g/km -> t/km
+  autobusElectrique: 80 / 1000000, // 80g/km -> t/km
   kwhDiesel: 0.7 / 1000, // T CO2 / kWh from diesel generator
 };

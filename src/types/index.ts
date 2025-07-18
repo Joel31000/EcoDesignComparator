@@ -24,6 +24,7 @@ export interface SimulationState {
   prixKmCamionElectrique: number;
   prixKmVoitureEssence: number;
   prixKmVoitureElectrique: number;
+  prixKmAutobusEssence: number;
   prixKmAutobusElectrique: number;
   
   // CO2 Emissions
@@ -39,6 +40,7 @@ export interface SimulationState {
   pctEcoAcier: number;
   pctEcoCuivre: number;
   pctEcoEnrobes: number;
+  pctEcoDeplacements: number;
 }
 
 export interface Breakdown {

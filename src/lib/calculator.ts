@@ -27,17 +27,17 @@ export function calculate(state: SimulationState): CalculationResults {
   const coutEnrobesEco = state.volumeEnrobes * state.prixEnrobeFroid;
   const coutEnrobesMixte = calculateMixed(coutEnrobesClassique, coutEnrobesEco, state.pctEcoEnrobes);
 
-  // For transport, personnel, energy, we assume they are linked to the global choice, not materials.
-  // We'll consider them fully "eco" for eco and "classique" for mixte/classique for simplicity.
-  // A more complex model could link them to material percentages.
   const coutTransportMarchandisesClassique = state.kmTransportMarchandises * state.prixKmCamionDiesel;
   const coutTransportMarchandisesEco = state.kmTransportMarchandises * state.prixKmCamionElectrique;
+  const coutTransportMarchandisesMixte = coutTransportMarchandisesClassique;
 
   const coutDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * state.prixKmVoitureEssence;
   const coutDeplacementsPersonnelEco = state.kmDeplacementsPersonnel * state.prixKmVoitureElectrique;
+  const coutDeplacementsPersonnelMixte = calculateMixed(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, state.pctEcoDeplacements);
 
   const coutEnergieClassique = state.kwhEnergie * state.prixKwhDiesel;
   const coutEnergieEco = state.kwhEnergie * state.prixKwhDiesel * 0.8; // Assuming 20% energy reduction for eco-design
+  const coutEnergieMixte = coutEnergieClassique;
 
   const coutEnginsClassique = 0; // Cost is embedded in material prices, this is for carbon
   const coutEnginsEco = 0;
@@ -61,24 +61,29 @@ export function calculate(state: SimulationState): CalculationResults {
 
   const carboneTransportMarchandisesClassique = state.kmTransportMarchandises * carbonFootprints.camionDiesel;
   const carboneTransportMarchandisesEco = state.kmTransportMarchandises * carbonFootprints.camionElectrique;
+  const carboneTransportMarchandisesMixte = carboneTransportMarchandisesClassique;
 
-  const carboneDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * carbonFootprints.voitureEssence;
-  const carboneDeplacementsPersonnelEco = state.kmDeplacementsPersonnel * carbonFootprints.voireElectrique;
+  // Déplacements Personnel
+  const carboneDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * carbonFootprints.autobusEssence;
+  const carboneDeplacementsPersonnelEco = state.kmDeplacementsPersonnel * carbonFootprints.autobusElectrique;
+  const carboneDeplacementsPersonnelMixte = calculateMixed(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, state.pctEcoDeplacements);
 
   const carboneEnergieClassique = state.kwhEnergie * carbonFootprints.kwhDiesel;
   const carboneEnergieEco = state.kwhEnergie * carbonFootprints.kwhDiesel * 0.8; // Assuming 20% energy reduction
+  const carboneEnergieMixte = carboneEnergieClassique;
   
   const carboneEnginsClassique = state.co2EnginsClassique;
   const carboneEnginsEco = state.co2EnginsEco;
+  const carboneEnginsMixte = carboneEnginsClassique;
 
   // Totals
   const totalCoutClassique = coutBetonClassique + coutAcierClassique + coutCuivreClassique + coutEnrobesClassique + coutTransportMarchandisesClassique + coutDeplacementsPersonnelClassique + coutEnergieClassique;
   const totalCoutEco = coutBetonEco + coutAcierEco + coutCuivreEco + coutEnrobesEco + coutTransportMarchandisesEco + coutDeplacementsPersonnelEco + coutEnergieEco;
-  const totalCoutMixte = coutBetonMixte + coutAcierMixte + coutCuivreMixte + coutEnrobesMixte + coutTransportMarchandisesClassique + coutDeplacementsPersonnelClassique + coutEnergieClassique; // Mixte uses classique for transport/energy/personnel
+  const totalCoutMixte = coutBetonMixte + coutAcierMixte + coutCuivreMixte + coutEnrobesMixte + coutTransportMarchandisesMixte + coutDeplacementsPersonnelMixte + coutEnergieMixte;
 
   const totalCarboneClassique = carboneBetonClassique + carboneAcierClassique + carboneCuivreClassique + carboneEnrobesClassique + carboneTransportMarchandisesClassique + carboneDeplacementsPersonnelClassique + carboneEnergieClassique + carboneEnginsClassique;
   const totalCarboneEco = carboneBetonEco + carboneAcierEco + carboneCuivreEco + carboneEnrobesEco + carboneTransportMarchandisesEco + carboneDeplacementsPersonnelEco + carboneEnergieEco + carboneEnginsEco;
-  const totalCarboneMixte = carboneBetonMixte + carboneAcierMixte + carboneCuivreMixte + carboneEnrobesMixte + carboneTransportMarchandisesClassique + carboneDeplacementsPersonnelClassique + carboneEnergieClassique + carboneEnginsClassique;
+  const totalCarboneMixte = carboneBetonMixte + carboneAcierMixte + carboneCuivreMixte + carboneEnrobesMixte + carboneTransportMarchandisesMixte + carboneDeplacementsPersonnelMixte + carboneEnergieMixte + carboneEnginsMixte;
 
   // Savings & Extra Costs
   const surcout = totalCoutEco - totalCoutClassique;
@@ -107,9 +112,9 @@ export function calculate(state: SimulationState): CalculationResults {
         acier: calculateBreakdown(coutAcierClassique, coutAcierEco, coutAcierMixte),
         cuivre: calculateBreakdown(coutCuivreClassique, coutCuivreEco, coutCuivreMixte),
         enrobes: calculateBreakdown(coutEnrobesClassique, coutEnrobesEco, coutEnrobesMixte),
-        transportMarchandises: calculateBreakdown(coutTransportMarchandisesClassique, coutTransportMarchandisesEco, coutTransportMarchandisesClassique),
-        deplacementsPersonnel: calculateBreakdown(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, coutDeplacementsPersonnelClassique),
-        energie: calculateBreakdown(coutEnergieClassique, coutEnergieEco, coutEnergieClassique),
+        transportMarchandises: calculateBreakdown(coutTransportMarchandisesClassique, coutTransportMarchandisesEco, coutTransportMarchandisesMixte),
+        deplacementsPersonnel: calculateBreakdown(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, coutDeplacementsPersonnelMixte),
+        energie: calculateBreakdown(coutEnergieClassique, coutEnergieEco, coutEnergieMixte),
         engins: calculateBreakdown(coutEnginsClassique, coutEnginsEco, coutEnginsClassique),
         coutCarbone: { eco: -economieEuros, mixte: -economieEurosMixte },
       }
@@ -127,10 +132,10 @@ export function calculate(state: SimulationState): CalculationResults {
         acier: calculateBreakdown(carboneAcierClassique, carboneAcierEco, carboneAcierMixte),
         cuivre: calculateBreakdown(carboneCuivreClassique, carboneCuivreEco, carboneCuivreMixte),
         enrobes: calculateBreakdown(carboneEnrobesClassique, carboneEnrobesEco, carboneEnrobesMixte),
-        transportMarchandises: calculateBreakdown(carboneTransportMarchandisesClassique, carboneTransportMarchandisesEco, carboneTransportMarchandisesClassique),
-        deplacementsPersonnel: calculateBreakdown(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, carboneDeplacementsPersonnelClassique),
-        energie: calculateBreakdown(carboneEnergieClassique, carboneEnergieEco, carboneEnergieClassique),
-        engins: { classique: carboneEnginsClassique, eco: carboneEnginsEco },
+        transportMarchandises: calculateBreakdown(carboneTransportMarchandisesClassique, carboneTransportMarchandisesEco, carboneTransportMarchandisesMixte),
+        deplacementsPersonnel: calculateBreakdown(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, carboneDeplacementsPersonnelMixte),
+        energie: calculateBreakdown(carboneEnergieClassique, carboneEnergieEco, carboneEnergieMixte),
+        engins: { classique: carboneEnginsClassique, eco: carboneEnginsEco, mixte: carboneEnginsMixte },
       }
     },
     amortissement,

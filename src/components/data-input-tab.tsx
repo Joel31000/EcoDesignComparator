@@ -135,13 +135,14 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Blend className="text-primary"/>Paramètres de Conception Mixte</CardTitle>
-          <CardDescription>Ajustez le pourcentage de matériaux éco-conçus pour la simulation "Mixte".</CardDescription>
+          <CardDescription>Ajustez le pourcentage de matériaux et méthodes éco-conçus pour la simulation "Mixte".</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+        <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
             <PercentageSlider label="Béton Bas Carbone" id="pctEcoBeton" value={state.pctEcoBeton} onSliderChange={onSliderChange} />
             <PercentageSlider label="Acier Bas Carbone" id="pctEcoAcier" value={state.pctEcoAcier} onSliderChange={onSliderChange} />
             <PercentageSlider label="Cuivre Recyclé" id="pctEcoCuivre" value={state.pctEcoCuivre} onSliderChange={onSliderChange} />
             <PercentageSlider label="Enrobé à Froid" id="pctEcoEnrobes" value={state.pctEcoEnrobes} onSliderChange={onSliderChange} />
+            <PercentageSlider label="Déplacements Électriques" id="pctEcoDeplacements" value={state.pctEcoDeplacements} onSliderChange={onSliderChange} />
         </CardContent>
       </Card>
 

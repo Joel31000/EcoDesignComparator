@@ -4,7 +4,6 @@ import type { CalculationResults } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Leaf, TrendingUp, Clock, Minus, Blend } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 
 interface SynthesisTabProps {
@@ -50,9 +49,6 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       'Éco-conceptionCarbone': carbone.breakdown[key as keyof typeof carbone.breakdown]?.eco ?? 0,
     }));
 
-
-  const surcoutAjuste = cout.coutGlobalEcoAjuste - cout.totalClassique;
-  const surcoutAjusteMixte = cout.coutGlobalMixteAjuste - cout.totalClassique;
 
   const summaryData = [
     {
@@ -129,7 +125,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
               <BarChart data={chartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${value/1000}k`} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${Number(value)/1000}k`} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted))' }}/>
                 <Legend iconSize={10} />
                 <Bar dataKey="ClassiqueCoût" name="Classique" fill="#a1a1aa" radius={[4, 4, 0, 0]} unit="€" />

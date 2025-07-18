@@ -41,6 +41,13 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --tab-1: 220 50% 85%;
+    --tab-1-active: 220 60% 70%;
+    --tab-2: 340 50% 85%;
+    --tab-2-active: 340 60% 70%;
+    --tab-3: 160 50% 85%;
+    --tab-3-active: 160 60% 70%;
   }
   .dark {
     --background: 120 10% 10%;
@@ -75,6 +82,13 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --tab-1: 220 30% 25%;
+    --tab-1-active: 220 40% 40%;
+    --tab-2: 340 30% 25%;
+    --tab-2-active: 340 40% 40%;
+    --tab-3: 160 30% 25%;
+    --tab-3-active: 160 40% 40%;
   }
 }
 

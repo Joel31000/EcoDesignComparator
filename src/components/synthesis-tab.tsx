@@ -37,10 +37,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0];
-      const unit = data.unit || '';
+      const unit = data.payload?.unit || ''; // Access unit from payload
       const formattedValue = unit === '€'
         ? formatCurrency(data.value as number)
-        : `${formatNumber(data.value as number)} ${unit.replace('2', '₂')}`; // Ensure subscript
+        : `${formatNumber(data.value as number)} ${unit.replace('2', '₂')}`;
       return (
         <div className="rounded-lg border bg-background p-2 shadow-sm">
           <div className="flex justify-between items-center gap-4">
@@ -94,9 +94,9 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
   }
 
   const carbonPieData = {
-    classique: getPieData(carbone.breakdown, 'classique', 'tCO2'),
-    mixte: getPieData(carbone.breakdown, 'mixte', 'tCO2'),
-    eco: getPieData(carbone.breakdown, 'eco', 'tCO2'),
+    classique: getPieData(carbone.breakdown, 'classique', 'tCO₂'),
+    mixte: getPieData(carbone.breakdown, 'mixte', 'tCO₂'),
+    eco: getPieData(carbone.breakdown, 'eco', 'tCO₂'),
   };
 
   const costPieData = {

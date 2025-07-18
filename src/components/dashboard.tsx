@@ -14,11 +14,13 @@ interface DashboardProps {
 export function Dashboard({ state, onStateChange, onSliderChange, results }: DashboardProps) {
   return (
     <Tabs defaultValue="data-input" className="w-full">
-      <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 md:w-auto mb-6">
-        <TabsTrigger value="data-input">Données d'Entrée</TabsTrigger>
-        <TabsTrigger value="comparison">Comparaison Détaillée</TabsTrigger>
-        <TabsTrigger value="synthesis">Synthèse &amp; Visualisation</TabsTrigger>
-      </TabsList>
+      <div className="flex justify-center mb-8">
+        <TabsList className="grid w-full max-w-lg grid-cols-1 md:grid-cols-3 p-2 h-auto">
+          <TabsTrigger value="data-input" className="py-2.5 text-base">Données d'Entrée</TabsTrigger>
+          <TabsTrigger value="comparison" className="py-2.5 text-base">Comparaison Détaillée</TabsTrigger>
+          <TabsTrigger value="synthesis" className="py-2.5 text-base">Synthèse &amp; Visualisation</TabsTrigger>
+        </TabsList>
+      </div>
       <TabsContent value="data-input">
         <DataInputTab state={state} onStateChange={onStateChange} onSliderChange={onSliderChange} />
       </TabsContent>

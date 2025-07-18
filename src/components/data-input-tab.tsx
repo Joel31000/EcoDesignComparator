@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { projectTypes } from "@/lib/data";
 import { AISuggestion } from "./ai-suggestion";
-import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings } from 'lucide-react';
+import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend } from 'lucide-react';
 
 interface DataInputTabProps {
   state: SimulationState;
@@ -43,6 +43,23 @@ const PriceSlider = ({ label, id, value, min, max, step, unit, onSliderChange }:
       min={min}
       max={max}
       step={step}
+    />
+  </div>
+);
+
+const PercentageSlider = ({ label, id, value, onSliderChange }: { label: string, id: keyof SimulationState, value: number, onSliderChange: (key: keyof SimulationState, value: number[]) => void }) => (
+  <div>
+    <div className="flex justify-between items-center mb-1">
+      <Label htmlFor={id} className="text-sm">{label}</Label>
+      <span className="text-sm font-semibold text-primary">{value}%</span>
+    </div>
+    <Slider
+      id={id}
+      value={[value]}
+      onValueChange={(val) => onSliderChange(id, val)}
+      min={0}
+      max={100}
+      step={1}
     />
   </div>
 );
@@ -114,6 +131,19 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           </CardContent>
         </Card>
       </div>
+
+       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Blend className="text-primary"/>Paramètres de Conception Mixte</CardTitle>
+          <CardDescription>Ajustez le pourcentage de matériaux éco-conçus pour la simulation "Mixte".</CardDescription>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+            <PercentageSlider label="Béton Bas Carbone" id="pctEcoBeton" value={state.pctEcoBeton} onSliderChange={onSliderChange} />
+            <PercentageSlider label="Acier Bas Carbone" id="pctEcoAcier" value={state.pctEcoAcier} onSliderChange={onSliderChange} />
+            <PercentageSlider label="Cuivre Recyclé" id="pctEcoCuivre" value={state.pctEcoCuivre} onSliderChange={onSliderChange} />
+            <PercentageSlider label="Enrobé à Froid" id="pctEcoEnrobes" value={state.pctEcoEnrobes} onSliderChange={onSliderChange} />
+        </CardContent>
+      </Card>
 
        <Card>
         <CardHeader>

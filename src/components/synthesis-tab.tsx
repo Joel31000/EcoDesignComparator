@@ -4,7 +4,8 @@ import type { CalculationResults } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Leaf, TrendingUp, Clock } from "lucide-react";
+import { DollarSign, Leaf, TrendingUp, Clock, Minus, Blend } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 
 interface SynthesisTabProps {
   results: CalculationResults;
@@ -17,29 +18,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border bg-background p-2 shadow-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col space-y-1">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              {label}
-            </span>
-            <span className="font-bold text-muted-foreground">
-              Classique
-            </span>
-            <span className="font-bold text-primary">
-              Éco-conception
-            </span>
-          </div>
-          <div className="flex flex-col space-y-1">
-             <span className="text-[0.70rem] uppercase text-muted-foreground">
-              {payload[0].unit}
-            </span>
-            <span className="font-bold">
-              {formatNumber(payload[0].value)}
-            </span>
-            <span className="font-bold text-primary">
-              {formatNumber(payload[1].value)}
-            </span>
-          </div>
+        <p className="mb-2 font-medium">{label}</p>
+        <div className="space-y-1">
+          {payload.map((p: any) => (
+            <div key={p.dataKey} style={{ color: p.color }} className="flex justify-between items-center gap-4">
+              <span>{p.name}:</span>
+              <span className="font-bold">{p.unit === '€' ? formatCurrency(p.value) : `${formatNumber(p.value)} ${p.unit}`}</span>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -50,82 +36,87 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 
 export function SynthesisTab({ results }: SynthesisTabProps) {
-  const { cout, carbone, amortissement } = results;
+  const { cout, carbone, amortissement, amortissementMixte } = results;
 
-  const costChartData = Object.entries(cout.breakdown)
-    .filter(([key]) => key !== 'coutCarbone')
-    .map(([key, value]) => ({
-      name: key.charAt(0).toUpperCase() + key.slice(1),
-      Classique: value.classique,
-      'Éco-conception': value.eco,
-      unit: '€'
+  const chartData = Object.keys(cout.breakdown)
+    .filter((key) => key !== 'coutCarbone')
+    .map((key) => ({
+      name: key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'),
+      ClassiqueCoût: cout.breakdown[key as keyof typeof cout.breakdown].classique,
+      MixteCoût: cout.breakdown[key as keyof typeof cout.breakdown].mixte,
+      'Éco-conceptionCoût': cout.breakdown[key as keyof typeof cout.breakdown].eco,
+      ClassiqueCarbone: carbone.breakdown[key as keyof typeof carbone.breakdown]?.classique ?? 0,
+      MixteCarbone: carbone.breakdown[key as keyof typeof carbone.breakdown]?.mixte ?? 0,
+      'Éco-conceptionCarbone': carbone.breakdown[key as keyof typeof carbone.breakdown]?.eco ?? 0,
     }));
 
-  const carbonChartData = Object.entries(carbone.breakdown).map(([key, value]) => ({
-    name: key.charAt(0).toUpperCase() + key.slice(1),
-    Classique: value.classique,
-    'Éco-conception': value.eco,
-    unit: 'tCO₂'
-  }));
 
   const surcoutAjuste = cout.coutGlobalEcoAjuste - cout.totalClassique;
+  const surcoutAjusteMixte = cout.coutGlobalMixteAjuste - cout.totalClassique;
+
+  const summaryData = [
+    {
+      name: 'Classique',
+      coutGlobal: cout.totalClassique,
+      carboneTotal: carbone.totalClassique,
+      economieCarbone: 0,
+      surcout: 0,
+      amortissement: -1,
+    },
+    {
+      name: 'Mixte',
+      coutGlobal: cout.coutGlobalMixteAjuste,
+      carboneTotal: carbone.totalMixte,
+      economieCarbone: carbone.economieTCO2Mixte,
+      surcout: cout.surcoutMixte,
+      amortissement: amortissementMixte,
+    },
+    {
+      name: 'Éco-conception',
+      coutGlobal: cout.coutGlobalEcoAjuste,
+      carboneTotal: carbone.totalEco,
+      economieCarbone: carbone.economieTCO2,
+      surcout: cout.surcout,
+      amortissement: amortissement,
+    },
+  ];
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Économie Carbone</CardTitle>
-            <Leaf className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">{formatNumber(carbone.economieTCO2)} tCO₂</div>
-            <p className="text-xs text-muted-foreground">
-              Équivalent à {formatCurrency(carbone.economieEuros)}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Bilan Financier Global</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${surcoutAjuste > 0 ? 'text-red-600' : 'text-primary'}`}>
-              {formatCurrency(surcoutAjuste)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {surcoutAjuste > 0 ? "Surcoût" : "Économie"} après valorisation du carbone
-            </p>
-          </CardContent>
-        </Card>
-         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Surcoût Initial</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(cout.surcout)}</div>
-            <p className="text-xs text-muted-foreground">
-              Investissement supplémentaire pour l'éco-conception
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Amortissement</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {amortissement > 0 ? `${formatNumber(amortissement)} ans` : <Badge variant="secondary">N/A</Badge>}
-            </div>
-             <p className="text-xs text-muted-foreground">
-              Temps de retour sur investissement
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+       <Card>
+        <CardHeader>
+          <CardTitle>Bilan Comparatif Global</CardTitle>
+          <CardDescription>Synthèse des trois scénarios de conception.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Scénario</TableHead>
+                        <TableHead className="text-right">Coût Global (après valeur carbone)</TableHead>
+                        <TableHead className="text-right">Empreinte Carbone</TableHead>
+                        <TableHead className="text-right">Économie Carbone (vs. Classique)</TableHead>
+                        <TableHead className="text-right">Surcoût Initial (vs. Classique)</TableHead>
+                        <TableHead className="text-right">Amortissement</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {summaryData.map((item) => (
+                        <TableRow key={item.name} className="font-medium">
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(item.coutGlobal)}</TableCell>
+                            <TableCell className="text-right">{formatNumber(item.carboneTotal)} tCO₂</TableCell>
+                            <TableCell className="text-right">{formatNumber(item.economieCarbone)} tCO₂</TableCell>
+                            <TableCell className="text-right">{formatCurrency(item.surcout)}</TableCell>
+                            <TableCell className="text-right">
+                                {item.amortissement > 0 ? `${formatNumber(item.amortissement)} ans` : <Badge variant="secondary">N/A</Badge>}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </CardContent>
+       </Card>
 
       <div className="grid lg:grid-cols-2 gap-8">
         <Card>
@@ -135,14 +126,15 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={costChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${value/1000}k`} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted))' }}/>
                 <Legend iconSize={10} />
-                <Bar dataKey="Classique" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Éco-conception" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="ClassiqueCoût" name="Classique" fill="#a1a1aa" radius={[4, 4, 0, 0]} unit="€" />
+                <Bar dataKey="MixteCoût" name="Mixte" fill="#a3e635" radius={[4, 4, 0, 0]} unit="€" />
+                <Bar dataKey="Éco-conceptionCoût" name="Éco-conception" fill="#4d7c0f" radius={[4, 4, 0, 0]} unit="€" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -154,14 +146,15 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={carbonChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value} t`} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted))' }}/>
                 <Legend iconSize={10} />
-                <Bar dataKey="Classique" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Éco-conception" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="ClassiqueCarbone" name="Classique" fill="#a1a1aa" radius={[4, 4, 0, 0]} unit="tCO₂" />
+                <Bar dataKey="MixteCarbone" name="Mixte" fill="#a3e635" radius={[4, 4, 0, 0]} unit="tCO₂" />
+                <Bar dataKey="Éco-conceptionCarbone" name="Éco-conception" fill="#4d7c0f" radius={[4, 4, 0, 0]} unit="tCO₂" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

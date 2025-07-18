@@ -37,6 +37,12 @@ export const defaultSimulationState: SimulationState = {
   // Global parameters
   prixTonneCarbone: 100,
   dureeDeVie: 50,
+
+  // Mixed percentages
+  pctEcoBeton: 50,
+  pctEcoAcier: 50,
+  pctEcoCuivre: 50,
+  pctEcoEnrobes: 50,
 };
 
 // Carbon footprints (in T eq CO₂ / unit)

@@ -11,10 +11,20 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('fr-FR', { style
 const formatNumber = (value: number) => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(value);
 
 const DiffCell = ({ value, unit = '' }: { value: number, unit?: string }) => {
+    if (value === 0 || !value) {
+        return (
+            <TableCell className="text-right font-medium text-muted-foreground">
+                <div className="flex items-center justify-end gap-1">
+                    <Minus className="h-4 w-4"/>
+                    <span>{unit === '€' ? formatCurrency(0) : `0${unit}`}</span>
+                </div>
+            </TableCell>
+        );
+    }
     const isPositive = value > 0;
     const isNegative = value < 0;
-    const Icon = isNegative ? ArrowDown : isPositive ? ArrowUp : Minus;
-    const color = isNegative ? 'text-green-600' : isPositive ? 'text-red-600' : 'text-muted-foreground';
+    const Icon = isNegative ? ArrowDown : ArrowUp;
+    const color = isNegative ? 'text-green-600' : 'text-red-600';
 
     return (
         <TableCell className={`text-right font-medium ${color}`}>
@@ -37,7 +47,7 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
     { label: 'Transport Marchandises', data: cout.breakdown.transportMarchandises },
     { label: 'Déplacements Personnel', data: cout.breakdown.deplacementsPersonnel },
     { label: 'Énergie', data: cout.breakdown.energie },
-    { label: 'Valeur du Carbone', data: cout.breakdown.coutCarbone },
+    { label: 'Valeur du Carbone', data: { classique: 0, mixte: cout.breakdown.coutCarbone.mixte, eco: cout.breakdown.coutCarbone.eco, diff: 0 } },
   ];
 
   const carbonItems = [
@@ -48,7 +58,7 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
     { label: 'Transport Marchandises', data: carbone.breakdown.transportMarchandises },
     { label: 'Déplacements Personnel', data: carbone.breakdown.deplacementsPersonnel },
     { label: 'Énergie', data: carbone.breakdown.energie },
-    { label: 'Engins de chantier', data: carbone.breakdown.engins },
+    { label: 'Engins de chantier', data: {classique: carbone.breakdown.engins.classique, eco: carbone.breakdown.engins.eco, mixte: carbone.breakdown.engins.classique, diff: carbone.breakdown.engins.eco - carbone.breakdown.engins.classique} },
   ];
 
   return (
@@ -63,8 +73,8 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
               <TableRow>
                 <TableHead>Poste</TableHead>
                 <TableHead className="text-right">Classique</TableHead>
+                <TableHead className="text-right">Mixte</TableHead>
                 <TableHead className="text-right">Éco-conception</TableHead>
-                <TableHead className="text-right">Différence</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -72,15 +82,15 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
                 <TableRow key={item.label}>
                   <TableCell className="font-medium">{item.label}</TableCell>
                   <TableCell className="text-right">{formatCurrency(item.data.classique)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(item.data.mixte)}</TableCell>
                   <TableCell className="text-right">{formatCurrency(item.data.eco)}</TableCell>
-                  <DiffCell value={item.data.diff} unit="€" />
                 </TableRow>
               ))}
               <TableRow className="font-bold bg-muted/50">
                 <TableHead>Coût Global</TableHead>
                 <TableHead className="text-right">{formatCurrency(cout.totalClassique)}</TableHead>
+                <TableHead className="text-right">{formatCurrency(cout.coutGlobalMixteAjuste)}</TableHead>
                 <TableHead className="text-right">{formatCurrency(cout.coutGlobalEcoAjuste)}</TableHead>
-                <DiffCell value={cout.coutGlobalEcoAjuste - cout.totalClassique} unit="€" />
               </TableRow>
             </TableBody>
           </Table>
@@ -96,8 +106,8 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
               <TableRow>
                 <TableHead>Poste</TableHead>
                 <TableHead className="text-right">Classique</TableHead>
+                <TableHead className="text-right">Mixte</TableHead>
                 <TableHead className="text-right">Éco-conception</TableHead>
-                <TableHead className="text-right">Différence</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,15 +115,15 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
                 <TableRow key={item.label}>
                   <TableCell className="font-medium">{item.label}</TableCell>
                   <TableCell className="text-right">{formatNumber(item.data.classique)} tCO₂</TableCell>
+                  <TableCell className="text-right">{formatNumber(item.data.mixte)} tCO₂</TableCell>
                   <TableCell className="text-right">{formatNumber(item.data.eco)} tCO₂</TableCell>
-                  <DiffCell value={item.data.diff} unit=" tCO₂" />
                 </TableRow>
               ))}
               <TableRow className="font-bold bg-muted/50">
                 <TableHead>Total Carbone</TableHead>
                 <TableHead className="text-right">{formatNumber(carbone.totalClassique)} tCO₂</TableHead>
+                <TableHead className="text-right">{formatNumber(carbone.totalMixte)} tCO₂</TableHead>
                 <TableHead className="text-right">{formatNumber(carbone.totalEco)} tCO₂</TableHead>
-                <DiffCell value={carbone.totalEco - carbone.totalClassique} unit=" tCO₂" />
               </TableRow>
             </TableBody>
           </Table>

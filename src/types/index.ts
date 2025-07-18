@@ -33,20 +33,30 @@ export interface SimulationState {
   // Global parameters
   prixTonneCarbone: number;
   dureeDeVie: number;
+  
+  // Mixed percentages
+  pctEcoBeton: number;
+  pctEcoAcier: number;
+  pctEcoCuivre: number;
+  pctEcoEnrobes: number;
 }
 
 export interface Breakdown {
   classique: number;
   eco: number;
-  diff: number;
+  mixte: number;
+  diff: number; // eco vs classique
 }
 
 export interface CalculationResults {
   cout: {
     totalClassique: number;
     totalEco: number;
+    totalMixte: number;
     surcout: number;
+    surcoutMixte: number;
     coutGlobalEcoAjuste: number;
+    coutGlobalMixteAjuste: number;
     breakdown: {
       beton: Breakdown;
       acier: Breakdown;
@@ -56,14 +66,17 @@ export interface CalculationResults {
       deplacementsPersonnel: Breakdown;
       energie: Breakdown;
       engins: Breakdown;
-      coutCarbone: Breakdown;
+      coutCarbone: Omit<Breakdown, 'mixte' | 'classique'> & { eco: number, mixte: number };
     }
   },
   carbone: {
     totalClassique: number;
     totalEco: number;
+    totalMixte: number;
     economieTCO2: number;
+    economieTCO2Mixte: number;
     economieEuros: number;
+    economieEurosMixte: number;
     breakdown: {
       beton: Breakdown;
       acier: Breakdown;
@@ -72,8 +85,9 @@ export interface CalculationResults {
       transportMarchandises: Breakdown;
       deplacementsPersonnel: Breakdown;
       energie: Breakdown;
-      engins: Breakdown;
+      engins: Omit<Breakdown, 'mixte' | 'diff'>;
     }
   },
   amortissement: number;
+  amortissementMixte: number;
 }

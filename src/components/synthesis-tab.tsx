@@ -36,11 +36,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0];
+      const unit = data.unit || '';
       return (
         <div className="rounded-lg border bg-background p-2 shadow-sm">
           <div className="flex justify-between items-center gap-4">
               <span style={{color: data.payload.fill}}>{data.name}:</span>
-              <span className="font-bold">{data.unit === '€' ? formatCurrency(data.value as number) : `${formatNumber(data.value as number)} ${data.unit}`}</span>
+              <span className="font-bold">{unit === '€' ? formatCurrency(data.value as number) : `${formatNumber(data.value as number)} ${unit}`}</span>
           </div>
         </div>
       );
@@ -52,7 +53,6 @@ const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) =
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/([A-Z])/g, ' $1');
 
 const PIE_COLORS = [
-    'hsl(var(--chart-1))',
     'hsl(var(--chart-2))',
     'hsl(var(--chart-3))',
     'hsl(var(--chart-4))',
@@ -61,6 +61,8 @@ const PIE_COLORS = [
     '#f59e0b',
     '#10b981',
 ];
+
+const BETON_COLOR = 'hsl(var(--chart-1))'; // Dark grey
 
 export function SynthesisTab({ results }: SynthesisTabProps) {
   const { cout, carbone, amortissement, amortissementMixte } = results;
@@ -146,9 +148,12 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                     stroke="hsl(var(--background))"
                     strokeWidth={2}
                 >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                    ))}
+                    {data.map((entry, index) => {
+                      const color = entry.name.toLowerCase() === 'béton' 
+                        ? BETON_COLOR
+                        : PIE_COLORS[index % PIE_COLORS.length];
+                      return <Cell key={`cell-${index}`} fill={color} />
+                    })}
                 </Pie>
                 <Tooltip content={<CustomPieTooltip />} />
                 <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />

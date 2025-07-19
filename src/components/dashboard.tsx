@@ -1,8 +1,16 @@
+
+'use client';
+
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from '@/components/ui/button';
+import { Download, Loader2 } from 'lucide-react';
 import { DataInputTab } from "./data-input-tab";
 import { ComparisonTab } from "./comparison-tab";
 import { SynthesisTab } from "./synthesis-tab";
 import type { SimulationState, CalculationResults } from "@/types";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface DashboardProps {
   state: SimulationState;
@@ -12,9 +20,58 @@ interface DashboardProps {
 }
 
 export function Dashboard({ state, onStateChange, onSliderChange, results }: DashboardProps) {
+  const [activeTab, setActiveTab] = useState('data-input');
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportToPDF = async () => {
+    setIsExporting(true);
+    const input = document.getElementById(activeTab);
+    if (input) {
+      try {
+        const canvas = await html2canvas(input, {
+          scale: 2, // Augmente la résolution
+          useCORS: true,
+          logging: false,
+          backgroundColor: null, // Fond transparent pour que le CSS du thème s'applique
+        });
+        const imgData = canvas.toDataURL('image/png');
+        
+        // orientation 'l' pour paysage
+        const pdf = new jsPDF('l', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = imgWidth / imgHeight;
+        
+        let newImgWidth = pdfWidth;
+        let newImgHeight = newImgWidth / ratio;
+
+        if (newImgHeight > pdfHeight) {
+          newImgHeight = pdfHeight;
+          newImgWidth = newImgHeight * ratio;
+        }
+
+        const x = (pdfWidth - newImgWidth) / 2;
+        const y = (pdfHeight - newImgHeight) / 2;
+
+        pdf.addImage(imgData, 'PNG', x, y, newImgWidth, newImgHeight);
+        pdf.save(`export-${activeTab}.pdf`);
+      } catch (error) {
+        console.error("Erreur lors de la génération du PDF:", error);
+      } finally {
+        setIsExporting(false);
+      }
+    } else {
+      console.error("Element à exporter non trouvé");
+      setIsExporting(false);
+    }
+  };
+
   return (
-    <Tabs defaultValue="data-input" className="w-full">
-      <div className="flex justify-center mb-8">
+    <Tabs defaultValue="data-input" className="w-full" onValueChange={setActiveTab}>
+      <div className="relative flex justify-center mb-8">
         <TabsList className="grid w-full max-w-2xl grid-cols-1 md:grid-cols-3 p-2 h-auto gap-2 bg-transparent">
           <TabsTrigger 
             value="data-input" 
@@ -41,14 +98,26 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
             Synthèse &amp; Visualisation
           </TabsTrigger>
         </TabsList>
+         <div className="absolute right-0 top-1/2 -translate-y-1/2">
+            <Button onClick={handleExportToPDF} disabled={isExporting}>
+                {isExporting ? (
+                    <Loader2 className="animate-spin" />
+                ) : (
+                    <Download />
+                )}
+                <span className="ml-2 hidden md:inline">
+                    {isExporting ? 'Export en cours...' : 'Téléchargement en PDF'}
+                </span>
+            </Button>
+        </div>
       </div>
-      <TabsContent value="data-input">
+      <TabsContent value="data-input" id="data-input">
         <DataInputTab state={state} onStateChange={onStateChange} onSliderChange={onSliderChange} />
       </TabsContent>
-      <TabsContent value="comparison">
+      <TabsContent value="comparison" id="comparison">
         <ComparisonTab results={results} />
       </TabsContent>
-      <TabsContent value="synthesis">
+      <TabsContent value="synthesis" id="synthesis">
         <SynthesisTab results={results} />
       </TabsContent>
     </Tabs>

@@ -1,4 +1,5 @@
 export interface SimulationState {
+  projectDescription: string;
   projectType: string;
   
   // Quantities
@@ -93,3 +94,5 @@ export interface CalculationResults {
   amortissement: number;
   amortissementMixte: number;
 }
+
+    

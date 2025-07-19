@@ -79,20 +79,32 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardTitle>Paramètres Généraux du Projet</CardTitle>
           <CardDescription>Définissez les informations de base de votre projet.</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="projectType">Type de Projet</Label>
-            <Select value={state.projectType} onValueChange={(value) => onStateChange({ projectType: value })}>
-              <SelectTrigger id="projectType">
-                <SelectValue placeholder="Sélectionner un type" />
-              </SelectTrigger>
-              <SelectContent>
-                {projectTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-              </SelectContent>
-            </Select>
+        <CardContent className="space-y-4">
+           <div className="space-y-2">
+            <Label htmlFor="projectDescription">Description du Projet</Label>
+            <Input
+              id="projectDescription"
+              type="text"
+              value={state.projectDescription}
+              onChange={(e) => onStateChange({ projectDescription: e.target.value })}
+              placeholder="Ex: Construction d'un pont de 50m"
+            />
           </div>
-          <div className="flex items-end">
-             <AISuggestion />
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="projectType">Type de Projet</Label>
+              <Select value={state.projectType} onValueChange={(value) => onStateChange({ projectType: value })}>
+                <SelectTrigger id="projectType" className="w-full md:w-[280px]">
+                  <SelectValue placeholder="Sélectionner un type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {projectTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-end">
+               <AISuggestion />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -180,3 +192,5 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
     </div>
   );
 }
+
+    

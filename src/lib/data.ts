@@ -3,6 +3,7 @@ import type { SimulationState } from '@/types';
 export const projectTypes = ['Travaux', 'Services', 'Fourniture'];
 
 export const defaultSimulationState: SimulationState = {
+  projectDescription: '',
   projectType: 'Travaux',
   
   // Quantities
@@ -65,3 +66,5 @@ export const carbonFootprints = {
   autobusElectrique: 80 / 1000000, // 80g/km -> t/km
   kwhDiesel: 0.7 / 1000, // T CO2 / kWh from diesel generator
 };
+
+    

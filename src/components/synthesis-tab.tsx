@@ -37,10 +37,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0];
-      const unit = data.payload?.unit || ''; // Access unit from payload
+      const unit = data.payload?.unit || '';
       const formattedValue = unit === '€'
         ? formatCurrency(data.value as number)
-        : `${formatNumber(data.value as number)} ${unit.replace('2', '₂')}`;
+        : `${formatNumber(data.value as number)} tCO₂`;
       return (
         <div className="rounded-lg border bg-background p-2 shadow-sm">
           <div className="flex justify-between items-center gap-4">
@@ -105,10 +105,13 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
     eco: getPieData(cout.breakdown, 'eco', '€'),
   };
 
+  const coutGlobalClassiqueAjuste = cout.totalClassique; // Référence, pas d'ajustement sur lui-même
+
   const summaryData = [
     {
       name: 'Classique',
-      coutGlobal: cout.totalClassique,
+      coutGlobal: coutGlobalClassiqueAjuste,
+      coutGlobalEcartPct: 0,
       carboneTotal: carbone.totalClassique,
       economieCarbone: 0,
       economieCarbonePct: 0,
@@ -118,6 +121,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
     {
       name: 'Mixte',
       coutGlobal: cout.coutGlobalMixteAjuste,
+      coutGlobalEcartPct: coutGlobalClassiqueAjuste > 0 ? ((cout.coutGlobalMixteAjuste - coutGlobalClassiqueAjuste) / coutGlobalClassiqueAjuste) * 100 : 0,
       carboneTotal: carbone.totalMixte,
       economieCarbone: carbone.economieTCO2Mixte,
       economieCarbonePct: carbone.totalClassique > 0 ? (carbone.economieTCO2Mixte / carbone.totalClassique) * 100 : 0,
@@ -127,6 +131,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
     {
       name: 'Éco-conception',
       coutGlobal: cout.coutGlobalEcoAjuste,
+      coutGlobalEcartPct: coutGlobalClassiqueAjuste > 0 ? ((cout.coutGlobalEcoAjuste - coutGlobalClassiqueAjuste) / coutGlobalClassiqueAjuste) * 100 : 0,
       carboneTotal: carbone.totalEco,
       economieCarbone: carbone.economieTCO2,
       economieCarbonePct: carbone.totalClassique > 0 ? (carbone.economieTCO2 / carbone.totalClassique) * 100 : 0,
@@ -193,7 +198,14 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                     {summaryData.map((item) => (
                         <TableRow key={item.name} className="font-medium">
                             <TableCell>{item.name}</TableCell>
-                            <TableCell className="text-right">{formatCurrency(item.coutGlobal)}</TableCell>
+                            <TableCell className="text-right">
+                                {formatCurrency(item.coutGlobal)}
+                                {item.name !== 'Classique' && (
+                                    <span className={`ml-2 font-normal ${item.coutGlobalEcartPct > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                        ({item.coutGlobalEcartPct > 0 ? '+' : ''}{formatNumber(item.coutGlobalEcartPct)}%)
+                                    </span>
+                                )}
+                            </TableCell>
                             <TableCell className="text-right">{formatNumber(item.carboneTotal)} tCO₂</TableCell>
                             <TableCell className="text-right">
                                 {item.name === 'Classique' 

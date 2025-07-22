@@ -86,11 +86,11 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
                   <TableCell className="text-right">{formatCurrency(item.data.eco)}</TableCell>
                 </TableRow>
               ))}
-              <TableRow className="font-bold bg-muted/50">
-                <TableHead>Coût Global</TableHead>
-                <TableHead className="text-right">{formatCurrency(cout.totalClassique)}</TableHead>
-                <TableHead className="text-right">{formatCurrency(cout.coutGlobalMixteAjuste)}</TableHead>
-                <TableHead className="text-right">{formatCurrency(cout.coutGlobalEcoAjuste)}</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="font-bold">Coût Global</TableHead>
+                <TableHead className="text-right font-bold">{formatCurrency(cout.totalClassique)}</TableHead>
+                <TableHead className="text-right font-bold">{formatCurrency(cout.coutGlobalMixteAjuste)}</TableHead>
+                <TableHead className="text-right font-bold">{formatCurrency(cout.coutGlobalEcoAjuste)}</TableHead>
               </TableRow>
             </TableBody>
           </Table>
@@ -119,11 +119,11 @@ export function ComparisonTab({ results }: ComparisonTabProps) {
                   <TableCell className="text-right">{formatNumber(item.data.eco)} tCO₂</TableCell>
                 </TableRow>
               ))}
-              <TableRow className="font-bold bg-muted/50">
-                <TableHead>Total Carbone</TableHead>
-                <TableHead className="text-right">{formatNumber(carbone.totalClassique)} tCO₂</TableHead>
-                <TableHead className="text-right">{formatNumber(carbone.totalMixte)} tCO₂</TableHead>
-                <TableHead className="text-right">{formatNumber(carbone.totalEco)} tCO₂</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="font-bold">Total Carbone</TableHead>
+                <TableHead className="text-right font-bold">{formatNumber(carbone.totalClassique)} tCO₂</TableHead>
+                <TableHead className="text-right font-bold">{formatNumber(carbone.totalMixte)} tCO₂</TableHead>
+                <TableHead className="text-right font-bold">{formatNumber(carbone.totalEco)} tCO₂</TableHead>
               </TableRow>
             </TableBody>
           </Table>

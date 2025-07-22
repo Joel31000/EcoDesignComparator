@@ -45,8 +45,10 @@ export function calculate(state: SimulationState): CalculationResults {
       state.pctEcoEnrobes
   );
 
-  const coutTransportMarchandisesClassique = state.kmTransportMarchandises * state.prixKmCamionDiesel;
-  const coutTransportMarchandisesEco = state.kmTransportMarchandises * state.prixKmCamionElectrique;
+  const coutHelicoptere = state.heuresHelicoptere * state.prixHeureHelicoptere;
+
+  const coutTransportMarchandisesClassique = state.kmTransportMarchandises * state.prixKmCamionDiesel + coutHelicoptere;
+  const coutTransportMarchandisesEco = state.kmTransportMarchandises * state.prixKmCamionElectrique + coutHelicoptere;
   const coutTransportMarchandisesMixte = coutTransportMarchandisesClassique;
 
   const coutDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * state.prixKmVoitureEssence;
@@ -93,8 +95,10 @@ export function calculate(state: SimulationState): CalculationResults {
       state.pctEcoEnrobes
   );
 
-  const carboneTransportMarchandisesClassique = state.kmTransportMarchandises * carbonFootprints.camionDiesel;
-  const carboneTransportMarchandisesEco = state.kmTransportMarchandises * carbonFootprints.camionElectrique;
+  const carboneHelicoptere = state.heuresHelicoptere * carbonFootprints.helicoptere;
+
+  const carboneTransportMarchandisesClassique = state.kmTransportMarchandises * carbonFootprints.camionDiesel + carboneHelicoptere;
+  const carboneTransportMarchandisesEco = state.kmTransportMarchandises * carbonFootprints.camionElectrique + carboneHelicoptere;
   const carboneTransportMarchandisesMixte = carboneTransportMarchandisesClassique;
 
   // Déplacements Personnel

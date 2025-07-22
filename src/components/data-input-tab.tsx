@@ -146,6 +146,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           </CardHeader>
           <CardContent className="space-y-4">
             <InputField label="Transport Marchandises" id="kmTransportMarchandises" value={state.kmTransportMarchandises} unit="km" onChange={handleInputChange} />
+            <InputField label="Transports héliportés" id="heuresHelicoptere" value={state.heuresHelicoptere} unit="Heures" onChange={handleInputChange} />
             <InputField label="Déplacements Personnel" id="kmDeplacementsPersonnel" value={state.kmDeplacementsPersonnel} unit="km" onChange={handleInputChange} />
           </CardContent>
         </Card>
@@ -190,6 +191,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
             <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
             <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
+            <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
         </CardContent>
       </Card>
 

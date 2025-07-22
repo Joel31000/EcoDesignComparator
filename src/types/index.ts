@@ -15,6 +15,7 @@ export interface SimulationState {
   kmTransportMarchandises: number;
   kmDeplacementsPersonnel: number;
   kwhEnergie: number;
+  heuresHelicoptere: number;
 
   // Prices
   prixKwhDiesel: number;
@@ -32,6 +33,7 @@ export interface SimulationState {
   prixKmVoitureElectrique: number;
   prixKmAutobusEssence: number;
   prixKmAutobusElectrique: number;
+  prixHeureHelicoptere: number;
   
   // CO2 Emissions
   co2EnginsClassique: number;

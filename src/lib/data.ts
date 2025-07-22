@@ -19,6 +19,7 @@ export const defaultSimulationState: SimulationState = {
   kmTransportMarchandises: 10000,
   kmDeplacementsPersonnel: 5000,
   kwhEnergie: 20000,
+  heuresHelicoptere: 0,
 
   // Prices
   prixKwhDiesel: 0.25,
@@ -36,6 +37,7 @@ export const defaultSimulationState: SimulationState = {
   prixKmVoitureElectrique: 0.3,
   prixKmAutobusEssence: 1.2,
   prixKmAutobusElectrique: 1.0,
+  prixHeureHelicoptere: 1440,
 
   // CO2 Emissions (in tonnes CO2)
   co2EnginsClassique: 10,
@@ -70,4 +72,5 @@ export const carbonFootprints = {
   autobusEssence: 133 / 1000000, // 133g/km -> t/km
   autobusElectrique: 80 / 1000000, // 80g/km -> t/km
   kwhDiesel: 0.7 / 1000, // T CO2 / kWh from diesel generator
+  helicoptere: 0.3, // T CO2 / heure (average of 200-400kg)
 };

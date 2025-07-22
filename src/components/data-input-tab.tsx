@@ -14,36 +14,20 @@ interface DataInputTabProps {
   onSliderChange: (key: keyof SimulationState, value: number[]) => void;
 }
 
-const InputField = ({ label, id, value, unit, onChange }: { label: string, id: keyof SimulationState, value: number, unit: string, onChange: (id: keyof SimulationState, value: string) => void }) => (
+const InputField = ({ label, id, value, unit, onChange, type = "number", step }: { label: string, id: keyof SimulationState, value: string | number, unit: string, onChange: (id: keyof SimulationState, value: string) => void, type?: string, step?: string }) => (
   <div className="grid grid-cols-3 items-center gap-4">
     <Label htmlFor={id} className="text-sm font-medium text-right">{label}</Label>
     <div className="col-span-2 flex items-center gap-2">
       <Input
         id={id}
-        type="number"
+        type={type}
         value={value}
         onChange={(e) => onChange(id, e.target.value)}
         className="flex-grow"
+        step={step}
       />
       <span className="text-sm text-muted-foreground">{unit}</span>
     </div>
-  </div>
-);
-
-const PriceSlider = ({ label, id, value, min, max, step, unit, onSliderChange }: { label: string, id: keyof SimulationState, value: number, min: number, max: number, step: number, unit: string, onSliderChange: (key: keyof SimulationState, value: number[]) => void }) => (
-  <div>
-    <div className="flex justify-between items-center mb-1">
-      <Label htmlFor={id} className="text-sm">{label}</Label>
-      <span className="text-sm font-semibold text-primary">{value.toLocaleString('fr-FR')} {unit}</span>
-    </div>
-    <Slider
-      id={id}
-      value={[value]}
-      onValueChange={(val) => onSliderChange(id, val)}
-      min={min}
-      max={max}
-      step={step}
-    />
   </div>
 );
 
@@ -67,10 +51,17 @@ const PercentageSlider = ({ label, id, value, onSliderChange }: { label: string,
 export function DataInputTab({ state, onStateChange, onSliderChange }: DataInputTabProps) {
   const handleInputChange = (id: keyof SimulationState, value: string) => {
     const numValue = Number(value);
-    if (!isNaN(numValue)) {
+    if (value === '' || isNaN(numValue)) {
+      onStateChange({ [id]: value });
+    } else {
       onStateChange({ [id]: numValue });
     }
   };
+
+  const handleStringInputChange = (id: keyof SimulationState, value: string) => {
+    onStateChange({ [id]: value });
+  };
+
 
   return (
     <div className="space-y-8">
@@ -161,17 +152,17 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><DollarSign className="text-primary"/>Ajustement des Prix</CardTitle>
-          <CardDescription>Utilisez les curseurs pour ajuster les prix et voir l'impact en temps réel.</CardDescription>
+          <CardDescription>Ajustez les prix pour voir l'impact en temps réel.</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <PriceSlider label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} min={100} max={300} step={5} unit="€/m³" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Béton Bas Carbone" id="prixBetonBasCarbone" value={state.prixBetonBasCarbone} min={100} max={300} step={5} unit="€/m³" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Acier Classique" id="prixAcierClassique" value={state.prixAcierClassique} min={700} max={1200} step={10} unit="€/t" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} min={800} max={1300} step={10} unit="€/t" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} min={7000} max={12000} step={100} unit="€/t" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} min={6000} max={11000} step={100} unit="€/t" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} min={50} max={150} step={5} unit="€/m³" onSliderChange={onSliderChange} />
-            <PriceSlider label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} min={60} max={160} step={5} unit="€/m³" onSliderChange={onSliderChange} />
+        <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+            <InputField label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} unit="€/m³" onChange={handleInputChange} />
+            <InputField label="Prix Béton Bas Carbone" id="prixBetonBasCarbone" value={state.prixBetonBasCarbone} unit="€/m³" onChange={handleInputChange} />
+            <InputField label="Prix Acier Classique" id="prixAcierClassique" value={state.prixAcierClassique} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
+            <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
         </CardContent>
       </Card>
 
@@ -185,12 +176,10 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 <InputField label="Durée de vie de l'ouvrage" id="dureeDeVie" value={state.dureeDeVie} unit="ans" onChange={handleInputChange} />
             </div>
             <div className="space-y-4">
-                <PriceSlider label="Prix de la Tonne de Carbone" id="prixTonneCarbone" value={state.prixTonneCarbone} min={0} max={500} step={10} unit="€/tCO₂" onSliderChange={onSliderChange} />
+                <InputField label="Prix de la Tonne de Carbone" id="prixTonneCarbone" value={state.prixTonneCarbone} unit="€/tCO₂" onChange={handleInputChange} />
             </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-
-    

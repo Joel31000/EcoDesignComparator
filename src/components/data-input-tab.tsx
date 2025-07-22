@@ -32,34 +32,21 @@ const InputField = ({ label, id, value, unit, onChange, type = "number", step }:
   </div>
 );
 
-const MaterialInputField = ({ label, idClassique, idEco, valueClassique, valueEco, unit, onChange }: { 
-  label: string, 
-  idClassique: keyof SimulationState, 
+const MaterialInputField = ({ label, idClassique, idEco, valueClassique, valueEco, unit, onChange }: {
+  label: string,
+  idClassique: keyof SimulationState,
   idEco: keyof SimulationState,
-  valueClassique: string | number, 
+  valueClassique: string | number,
   valueEco: string | number,
-  unit: string, 
-  onChange: (id: keyof SimulationState, value: string) => void 
+  unit: string,
+  onChange: (id: keyof SimulationState, value: string) => void
 }) => (
-  <div className="space-y-2">
-     <Label className="text-sm font-semibold">{label}</Label>
-     <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor={idClassique} className="text-xs text-muted-foreground">Classique</Label>
-          <div className="flex items-center gap-2">
-            <Input id={idClassique} type="number" value={valueClassique} onChange={(e) => onChange(idClassique, e.target.value)} className="flex-grow" />
-             <span className="text-sm text-muted-foreground">{unit}</span>
-          </div>
-        </div>
-        <div>
-           <Label htmlFor={idEco} className="text-xs text-muted-foreground">Éco-conception</Label>
-           <div className="flex items-center gap-2">
-            <Input id={idEco} type="number" value={valueEco} onChange={(e) => onChange(idEco, e.target.value)} className="flex-grow" />
-             <span className="text-sm text-muted-foreground">{unit}</span>
-          </div>
-        </div>
-     </div>
-  </div>
+    <div className="contents">
+        <Label className="flex items-center font-semibold">{label}</Label>
+        <Input id={idClassique} type="number" value={valueClassique} onChange={(e) => onChange(idClassique, e.target.value)} />
+        <Input id={idEco} type="number" value={valueEco} onChange={(e) => onChange(idEco, e.target.value)} />
+        <span className="flex items-center text-sm text-muted-foreground">{unit}</span>
+    </div>
 );
 
 
@@ -139,10 +126,17 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <CardDescription>Quantités pour le scénario classique vs. éco-conçu (utilisé pour les modes Éco et Mixte).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <MaterialInputField label="Béton" idClassique="volumeBeton" idEco="volumeBetonEco" valueClassique={state.volumeBeton} valueEco={state.volumeBetonEco} unit="m³" onChange={handleInputChange} />
-            <MaterialInputField label="Acier" idClassique="poidsAcier" idEco="poidsAcierEco" valueClassique={state.poidsAcier} valueEco={state.poidsAcierEco} unit="tonnes" onChange={handleInputChange} />
-            <MaterialInputField label="Cuivre" idClassique="poidsCuivre" idEco="poidsCuivreEco" valueClassique={state.poidsCuivre} valueEco={state.poidsCuivreEco} unit="tonnes" onChange={handleInputChange} />
-            <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m³" onChange={handleInputChange} />
+            <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-center">
+                <div></div>
+                <Label className="text-xs text-muted-foreground font-semibold">Classique</Label>
+                <Label className="text-xs text-muted-foreground font-semibold">Mixte &amp; Éco-conception</Label>
+                <div></div>
+
+                <MaterialInputField label="Béton" idClassique="volumeBeton" idEco="volumeBetonEco" valueClassique={state.volumeBeton} valueEco={state.volumeBetonEco} unit="m³" onChange={handleInputChange} />
+                <MaterialInputField label="Acier" idClassique="poidsAcier" idEco="poidsAcierEco" valueClassique={state.poidsAcier} valueEco={state.poidsAcierEco} unit="tonnes" onChange={handleInputChange} />
+                <MaterialInputField label="Cuivre" idClassique="poidsCuivre" idEco="poidsCuivreEco" valueClassique={state.poidsCuivre} valueEco={state.poidsCuivreEco} unit="tonnes" onChange={handleInputChange} />
+                <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m³" onChange={handleInputChange} />
+            </div>
           </CardContent>
         </Card>
 

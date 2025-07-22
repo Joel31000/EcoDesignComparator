@@ -7,6 +7,11 @@ export interface SimulationState {
   poidsAcier: number;
   poidsCuivre: number;
   volumeEnrobes: number;
+  volumeBetonEco: number; // For Eco and Mixed scenarios
+  poidsAcierEco: number; // For Eco and Mixed scenarios
+  poidsCuivreEco: number; // For Eco and Mixed scenarios
+  volumeEnrobesEco: number; // For Eco and Mixed scenarios
+
   kmTransportMarchandises: number;
   kmDeplacementsPersonnel: number;
   kwhEnergie: number;
@@ -94,5 +99,3 @@ export interface CalculationResults {
   amortissement: number;
   amortissementMixte: number;
 }
-
-    

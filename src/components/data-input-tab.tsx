@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { projectTypes } from "@/lib/data";
 import { AISuggestion } from "./ai-suggestion";
 import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend } from 'lucide-react';
+import { Separator } from "./ui/separator";
 
 interface DataInputTabProps {
   state: SimulationState;
@@ -30,6 +31,37 @@ const InputField = ({ label, id, value, unit, onChange, type = "number", step }:
     </div>
   </div>
 );
+
+const MaterialInputField = ({ label, idClassique, idEco, valueClassique, valueEco, unit, onChange }: { 
+  label: string, 
+  idClassique: keyof SimulationState, 
+  idEco: keyof SimulationState,
+  valueClassique: string | number, 
+  valueEco: string | number,
+  unit: string, 
+  onChange: (id: keyof SimulationState, value: string) => void 
+}) => (
+  <div className="space-y-2">
+     <Label className="text-sm font-semibold">{label}</Label>
+     <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor={idClassique} className="text-xs text-muted-foreground">Classique</Label>
+          <div className="flex items-center gap-2">
+            <Input id={idClassique} type="number" value={valueClassique} onChange={(e) => onChange(idClassique, e.target.value)} className="flex-grow" />
+             <span className="text-sm text-muted-foreground">{unit}</span>
+          </div>
+        </div>
+        <div>
+           <Label htmlFor={idEco} className="text-xs text-muted-foreground">Éco-conception</Label>
+           <div className="flex items-center gap-2">
+            <Input id={idEco} type="number" value={valueEco} onChange={(e) => onChange(idEco, e.target.value)} className="flex-grow" />
+             <span className="text-sm text-muted-foreground">{unit}</span>
+          </div>
+        </div>
+     </div>
+  </div>
+);
+
 
 const PercentageSlider = ({ label, id, value, onSliderChange }: { label: string, id: keyof SimulationState, value: number, onSliderChange: (key: keyof SimulationState, value: number[]) => void }) => (
   <div>
@@ -104,12 +136,13 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Package className="text-primary"/>Quantités de Matériaux</CardTitle>
+            <CardDescription>Quantités pour le scénario classique vs. éco-conçu (utilisé pour les modes Éco et Mixte).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <InputField label="Béton" id="volumeBeton" value={state.volumeBeton} unit="m³" onChange={handleInputChange} />
-            <InputField label="Acier" id="poidsAcier" value={state.poidsAcier} unit="tonnes" onChange={handleInputChange} />
-            <InputField label="Cuivre" id="poidsCuivre" value={state.poidsCuivre} unit="tonnes" onChange={handleInputChange} />
-            <InputField label="Enrobés" id="volumeEnrobes" value={state.volumeEnrobes} unit="m³" onChange={handleInputChange} />
+            <MaterialInputField label="Béton" idClassique="volumeBeton" idEco="volumeBetonEco" valueClassique={state.volumeBeton} valueEco={state.volumeBetonEco} unit="m³" onChange={handleInputChange} />
+            <MaterialInputField label="Acier" idClassique="poidsAcier" idEco="poidsAcierEco" valueClassique={state.poidsAcier} valueEco={state.poidsAcierEco} unit="tonnes" onChange={handleInputChange} />
+            <MaterialInputField label="Cuivre" idClassique="poidsCuivre" idEco="poidsCuivreEco" valueClassique={state.poidsCuivre} valueEco={state.poidsCuivreEco} unit="tonnes" onChange={handleInputChange} />
+            <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m³" onChange={handleInputChange} />
           </CardContent>
         </Card>
 

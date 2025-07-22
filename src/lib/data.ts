@@ -11,6 +11,11 @@ export const defaultSimulationState: SimulationState = {
   poidsAcier: 50, // tonnes
   poidsCuivre: 5, // tonnes
   volumeEnrobes: 500, // m³
+  volumeBetonEco: 1000,
+  poidsAcierEco: 50,
+  poidsCuivreEco: 5,
+  volumeEnrobesEco: 500,
+
   kmTransportMarchandises: 10000,
   kmDeplacementsPersonnel: 5000,
   kwhEnergie: 20000,
@@ -66,5 +71,3 @@ export const carbonFootprints = {
   autobusElectrique: 80 / 1000000, // 80g/km -> t/km
   kwhDiesel: 0.7 / 1000, // T CO2 / kWh from diesel generator
 };
-
-    

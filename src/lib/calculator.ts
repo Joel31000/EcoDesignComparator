@@ -5,27 +5,45 @@ function calculateBreakdown(classique: number, eco: number, mixte: number): Brea
   return { classique, eco, mixte, diff: eco - classique };
 }
 
-const calculateMixed = (classique: number, eco: number, pctEco: number) => {
-    return (classique * (1 - pctEco / 100)) + (eco * (pctEco / 100));
+// calculates the mixed value based on the percentage of eco-conception.
+const calculateMixedValue = (classiqueValue: number, ecoValue: number, pctEco: number) => {
+    return (classiqueValue * (1 - pctEco / 100)) + (ecoValue * (pctEco / 100));
 }
 
 export function calculate(state: SimulationState): CalculationResults {
   // Cost Calculations
+  // The cost of a material depends on its type (classic/eco) and its quantity (classic/eco)
   const coutBetonClassique = state.volumeBeton * state.prixBetonClassique;
-  const coutBetonEco = state.volumeBeton * state.prixBetonBasCarbone;
-  const coutBetonMixte = calculateMixed(coutBetonClassique, coutBetonEco, state.pctEcoBeton);
+  const coutBetonEco = state.volumeBetonEco * state.prixBetonBasCarbone;
+  const coutBetonMixte = calculateMixedValue(
+      state.volumeBeton * state.prixBetonClassique,
+      state.volumeBetonEco * state.prixBetonBasCarbone,
+      state.pctEcoBeton
+  );
 
   const coutAcierClassique = state.poidsAcier * state.prixAcierClassique;
-  const coutAcierEco = state.poidsAcier * state.prixAcierBasCarbone;
-  const coutAcierMixte = calculateMixed(coutAcierClassique, coutAcierEco, state.pctEcoAcier);
+  const coutAcierEco = state.poidsAcierEco * state.prixAcierBasCarbone;
+  const coutAcierMixte = calculateMixedValue(
+      state.poidsAcier * state.prixAcierClassique,
+      state.poidsAcierEco * state.prixAcierBasCarbone,
+      state.pctEcoAcier
+  );
 
   const coutCuivreClassique = state.poidsCuivre * state.prixCuivreClassique;
-  const coutCuivreEco = state.poidsCuivre * state.prixCuivreRecycle;
-  const coutCuivreMixte = calculateMixed(coutCuivreClassique, coutCuivreEco, state.pctEcoCuivre);
+  const coutCuivreEco = state.poidsCuivreEco * state.prixCuivreRecycle;
+  const coutCuivreMixte = calculateMixedValue(
+      state.poidsCuivre * state.prixCuivreClassique,
+      state.poidsCuivreEco * state.prixCuivreRecycle,
+      state.pctEcoCuivre
+  );
 
   const coutEnrobesClassique = state.volumeEnrobes * state.prixEnrobeChaud;
-  const coutEnrobesEco = state.volumeEnrobes * state.prixEnrobeFroid;
-  const coutEnrobesMixte = calculateMixed(coutEnrobesClassique, coutEnrobesEco, state.pctEcoEnrobes);
+  const coutEnrobesEco = state.volumeEnrobesEco * state.prixEnrobeFroid;
+  const coutEnrobesMixte = calculateMixedValue(
+      state.volumeEnrobes * state.prixEnrobeChaud,
+      state.volumeEnrobesEco * state.prixEnrobeFroid,
+      state.pctEcoEnrobes
+  );
 
   const coutTransportMarchandisesClassique = state.kmTransportMarchandises * state.prixKmCamionDiesel;
   const coutTransportMarchandisesEco = state.kmTransportMarchandises * state.prixKmCamionElectrique;
@@ -33,7 +51,7 @@ export function calculate(state: SimulationState): CalculationResults {
 
   const coutDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * state.prixKmVoitureEssence;
   const coutDeplacementsPersonnelEco = state.kmDeplacementsPersonnel * state.prixKmVoitureElectrique;
-  const coutDeplacementsPersonnelMixte = calculateMixed(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, state.pctEcoDeplacements);
+  const coutDeplacementsPersonnelMixte = calculateMixedValue(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, state.pctEcoDeplacements);
 
   const coutEnergieClassique = state.kwhEnergie * state.prixKwhDiesel;
   const coutEnergieEco = state.kwhEnergie * state.prixKwhDiesel * 0.8; // Assuming 20% energy reduction for eco-design
@@ -44,20 +62,36 @@ export function calculate(state: SimulationState): CalculationResults {
   
   // Carbon Footprint Calculations (in tonnes CO2)
   const carboneBetonClassique = state.volumeBeton * carbonFootprints.betonClassique;
-  const carboneBetonEco = state.volumeBeton * carbonFootprints.betonBasCarbone;
-  const carboneBetonMixte = calculateMixed(carboneBetonClassique, carboneBetonEco, state.pctEcoBeton);
+  const carboneBetonEco = state.volumeBetonEco * carbonFootprints.betonBasCarbone;
+  const carboneBetonMixte = calculateMixedValue(
+      state.volumeBeton * carbonFootprints.betonClassique,
+      state.volumeBetonEco * carbonFootprints.betonBasCarbone,
+      state.pctEcoBeton
+  );
 
   const carboneAcierClassique = state.poidsAcier * carbonFootprints.acierClassique;
-  const carboneAcierEco = state.poidsAcier * carbonFootprints.acierBasCarbone;
-  const carboneAcierMixte = calculateMixed(carboneAcierClassique, carboneAcierEco, state.pctEcoAcier);
+  const carboneAcierEco = state.poidsAcierEco * carbonFootprints.acierBasCarbone;
+  const carboneAcierMixte = calculateMixedValue(
+      state.poidsAcier * carbonFootprints.acierClassique,
+      state.poidsAcierEco * carbonFootprints.acierBasCarbone,
+      state.pctEcoAcier
+  );
 
   const carboneCuivreClassique = state.poidsCuivre * carbonFootprints.cuivreClassique;
-  const carboneCuivreEco = state.poidsCuivre * carbonFootprints.cuivreRecycle;
-  const carboneCuivreMixte = calculateMixed(carboneCuivreClassique, carboneCuivreEco, state.pctEcoCuivre);
+  const carboneCuivreEco = state.poidsCuivreEco * carbonFootprints.cuivreRecycle;
+  const carboneCuivreMixte = calculateMixedValue(
+      state.poidsCuivre * carbonFootprints.cuivreClassique,
+      state.poidsCuivreEco * carbonFootprints.cuivreRecycle,
+      state.pctEcoCuivre
+  );
 
   const carboneEnrobesClassique = state.volumeEnrobes * carbonFootprints.enrobeChaud;
-  const carboneEnrobesEco = state.volumeEnrobes * carbonFootprints.enrobeFroid;
-  const carboneEnrobesMixte = calculateMixed(carboneEnrobesClassique, carboneEnrobesEco, state.pctEcoEnrobes);
+  const carboneEnrobesEco = state.volumeEnrobesEco * carbonFootprints.enrobeFroid;
+  const carboneEnrobesMixte = calculateMixedValue(
+      state.volumeEnrobes * carbonFootprints.enrobeChaud,
+      state.volumeEnrobesEco * carbonFootprints.enrobeFroid,
+      state.pctEcoEnrobes
+  );
 
   const carboneTransportMarchandisesClassique = state.kmTransportMarchandises * carbonFootprints.camionDiesel;
   const carboneTransportMarchandisesEco = state.kmTransportMarchandises * carbonFootprints.camionElectrique;
@@ -66,7 +100,7 @@ export function calculate(state: SimulationState): CalculationResults {
   // Déplacements Personnel
   const carboneDeplacementsPersonnelClassique = state.kmDeplacementsPersonnel * carbonFootprints.autobusEssence;
   const carboneDeplacementsPersonnelEco = state.kmDeplacementsPersonnel * carbonFootprints.autobusElectrique;
-  const carboneDeplacementsPersonnelMixte = calculateMixed(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, state.pctEcoDeplacements);
+  const carboneDeplacementsPersonnelMixte = calculateMixedValue(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, state.pctEcoDeplacements);
 
   const carboneEnergieClassique = state.kwhEnergie * carbonFootprints.kwhDiesel;
   const carboneEnergieEco = state.kwhEnergie * carbonFootprints.kwhDiesel * 0.8; // Assuming 20% energy reduction

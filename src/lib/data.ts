@@ -94,7 +94,7 @@ export const defaultSimulationState: SimulationState = {
 
 // Carbon footprints (in T eq CO₂ / unit)
 export const carbonFootprints = {
-  betonClassique: 0.800, // T CO2 / m³ - new fixed value
+  betonClassique: 0.800, // tCO2eq/m3
   acierClassique: 1.8, // T CO2 / tonne
   acierBasCarbone: 0.4, // T CO2 / tonne
   cuivreClassique: 4.5, // T CO2 / tonne

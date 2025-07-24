@@ -4,9 +4,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { projectTypes } from "@/lib/data";
+import { projectTypes, betonBasCarboneOptions } from "@/lib/data";
 import { AISuggestion } from "./ai-suggestion";
-import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend } from 'lucide-react';
+import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend, Warehouse } from 'lucide-react';
 import { Separator } from "./ui/separator";
 
 interface DataInputTabProps {
@@ -162,6 +162,40 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           </CardContent>
         </Card>
       </div>
+
+       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Warehouse className="text-primary"/>Matériaux</CardTitle>
+          <CardDescription>Paramètres spécifiques aux matériaux bas-carbone.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+                <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
+                <Select
+                    value={String(state.betonBasCarboneEmpreinte)}
+                    onValueChange={(value) => onStateChange({ betonBasCarboneEmpreinte: Number(value) })}
+                >
+                    <SelectTrigger id="betonBasCarboneEmpreinte">
+                        <SelectValue placeholder="Sélectionner un type de béton" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {betonBasCarboneOptions.map(option => (
+                            <SelectItem key={option.name} value={String(option.empreinte)}>
+                                {option.name} ({option.empreinte} tCO₂eq/m³)
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <InputField
+                label="Masse dans la formulation"
+                id="masseBetonBasCarbone"
+                value={state.masseBetonBasCarbone}
+                unit="Kg"
+                onChange={handleInputChange}
+            />
+        </CardContent>
+       </Card>
 
        <Card>
         <CardHeader>

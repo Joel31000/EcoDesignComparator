@@ -49,6 +49,15 @@ export interface SimulationState {
   pctEcoCuivre: number;
   pctEcoEnrobes: number;
   pctEcoDeplacements: number;
+
+  // Low carbon concrete type
+  betonBasCarboneEmpreinte: number;
+  masseBetonBasCarbone: number;
+}
+
+export interface BetonBasCarboneOption {
+  name: string;
+  empreinte: number;
 }
 
 export interface Breakdown {

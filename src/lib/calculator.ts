@@ -63,7 +63,7 @@ export function calculate(state: SimulationState): CalculationResults {
   const coutEnginsEco = 0;
   
   // Carbon Footprint Calculations (in tonnes CO2)
-  const carboneBetonClassique = state.volumeBeton * carbonFootprints.betonClassique;
+  const carboneBetonClassique = state.volumeBeton * (state.masseBetonBasCarbone / 1000) * carbonFootprints.betonClassique;
   const carboneBetonEco = state.volumeBetonEco * state.betonBasCarboneEmpreinte * (state.masseBetonBasCarbone / 1000);
   const carboneBetonMixte = calculateMixedValue(carboneBetonClassique, carboneBetonEco, state.pctEcoBeton);
 
@@ -176,3 +176,5 @@ export function calculate(state: SimulationState): CalculationResults {
     amortissementMixte,
   };
 }
+
+    

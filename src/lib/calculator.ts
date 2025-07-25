@@ -63,7 +63,7 @@ export function calculate(state: SimulationState): CalculationResults {
   const coutEnginsEco = 0;
   
   // Carbon Footprint Calculations (in tonnes CO2)
-  const armatureImpact = state.isBetonArme ? 115 : 0;
+  const armatureImpact = state.isBetonArme ? 0.115 : 0;
 
   const carboneBetonClassique = state.volumeBeton * (((state.masseBetonBasCarbone / 1000) * carbonFootprints.betonClassique) + armatureImpact);
   const carboneBetonEco = state.volumeBetonEco * (((state.masseBetonBasCarbone / 1000) * state.betonBasCarboneEmpreinte) + armatureImpact);

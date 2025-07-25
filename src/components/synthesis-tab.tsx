@@ -308,8 +308,8 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                   <h3 className="text-xl font-semibold mb-4">Répartition des Coûts (€)</h3>
                   <div className="grid md:grid-cols-3 gap-8">
                       <DonutChartCard title="Classique" data={costPieData.classique} total={cout.totalClassique} unit="€" />
-                      <DonutChartCard title="Mixte" data={costPieData.mixte} total={cout.totalMixte} unit="€" />
-                      <DonutChartCard title="Éco-conception" data={costPieData.eco} total={cout.totalEco} unit="€" />
+                      <DonutChartCard title="Mixte" data={costPieData.mixte} total={cout.coutGlobalMixteAjuste} unit="€" />
+                      <DonutChartCard title="Éco-conception" data={costPieData.eco} total={cout.coutGlobalEcoAjuste} unit="€" />
                   </div>
               </div>
           </CardContent>

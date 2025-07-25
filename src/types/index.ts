@@ -53,6 +53,7 @@ export interface SimulationState {
   // Low carbon concrete type
   betonBasCarboneEmpreinte: number;
   masseBetonBasCarbone: number;
+  isBetonArme: boolean;
 }
 
 export interface BetonBasCarboneOption {

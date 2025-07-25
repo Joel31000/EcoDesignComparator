@@ -8,6 +8,7 @@ import { projectTypes, betonBasCarboneOptions } from "@/lib/data";
 import { AISuggestion } from "./ai-suggestion";
 import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend, Warehouse } from 'lucide-react';
 import { Separator } from "./ui/separator";
+import { Checkbox } from "./ui/checkbox";
 
 interface DataInputTabProps {
   state: SimulationState;
@@ -168,7 +169,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardTitle className="flex items-center gap-2"><Warehouse className="text-primary"/>Matériaux</CardTitle>
           <CardDescription>Paramètres spécifiques aux matériaux bas-carbone.</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6">
+        <CardContent className="grid md:grid-cols-2 gap-6 items-end">
             <div className="space-y-2">
                 <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
                 <Select
@@ -194,6 +195,12 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 unit="Kg"
                 onChange={handleInputChange}
             />
+            <div className="flex items-center space-x-2">
+                <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={(checked) => onStateChange({ isBetonArme: !!checked })} />
+                <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Béton armé
+                </Label>
+            </div>
         </CardContent>
        </Card>
 

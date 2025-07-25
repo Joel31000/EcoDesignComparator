@@ -90,6 +90,7 @@ export const defaultSimulationState: SimulationState = {
   // Low carbon concrete
   betonBasCarboneEmpreinte: betonBasCarboneOptions[0].empreinte,
   masseBetonBasCarbone: 350, // kg
+  isBetonArme: false,
 };
 
 // Carbon footprints (in T eq CO₂ / unit)

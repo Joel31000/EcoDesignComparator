@@ -2,9 +2,10 @@
 
 import type { CalculationResults } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Sector } from 'recharts';
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import { useState } from "react";
 
 interface SynthesisTabProps {
   results: CalculationResults;
@@ -34,6 +35,98 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/([A-Z])/g, ' $1');
 
+const PIE_CHART_COLORS = ["#4d7c0f", "#a3e635", "#a1a1aa", "#64748b", "#334155", "#f97316", "#f59e0b", "#eab308"];
+
+const renderActiveShape = (props: any) => {
+  const RADIAN = Math.PI / 180;
+  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value, unit } = props;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? 'start' : 'end';
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius + 6}
+        outerRadius={outerRadius + 10}
+        fill={fill}
+      />
+      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">{payload.name}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
+        {`${unit === '€' ? formatCurrency(value) : formatNumber(value) + ` ${unit}`} (${(percent * 100).toFixed(2)}%)`}
+      </text>
+    </g>
+  );
+};
+
+
+const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { name: string, value: number }[], total: number, unit: string }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
+  
+  const filteredData = data.filter(d => d.value > 0);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+         <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                activeIndex={activeIndex}
+                activeShape={(props) => renderActiveShape({ ...props, unit })}
+                data={filteredData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                onMouseEnter={onPieEnter}
+              >
+                  {filteredData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
+                  ))}
+              </Pie>
+              <foreignObject x="50%" y="50%" width="120" height="60" style={{ transform: 'translate(-60px, -30px)' }}>
+                 <div className="flex flex-col items-center justify-center h-full text-center">
+                    <p className="text-xs text-muted-foreground">Total</p>
+                    <p className="font-bold text-lg text-foreground">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
+                 </div>
+              </foreignObject>
+            </PieChart>
+          </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function SynthesisTab({ results }: SynthesisTabProps) {
   const { cout, carbone, amortissement, amortissementMixte } = results;
 
@@ -49,7 +142,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       'Éco-conceptionCarbone': carbone.breakdown[key as keyof typeof carbone.breakdown]?.eco ?? 0,
     }));
     
-  const coutGlobalClassiqueAjuste = cout.totalClassique; // Référence, pas d'ajustement sur lui-même
+  const coutGlobalClassiqueAjuste = cout.totalClassique; 
 
   const summaryData = [
     {
@@ -83,6 +176,28 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       amortissement: amortissement,
     },
   ];
+
+  const getPieData = (type: 'cost' | 'carbon', scenario: 'classique' | 'mixte' | 'eco') => {
+      const breakdown = type === 'cost' ? cout.breakdown : carbone.breakdown;
+      return Object.keys(breakdown)
+          .filter(key => key !== 'coutCarbone' && (breakdown as any)[key][scenario] > 0)
+          .map(key => ({
+              name: capitalize(key),
+              value: (breakdown as any)[key][scenario],
+          }));
+  };
+
+  const carbonPieData = {
+      classique: getPieData('carbon', 'classique'),
+      mixte: getPieData('carbon', 'mixte'),
+      eco: getPieData('carbon', 'eco'),
+  };
+
+  const costPieData = {
+      classique: getPieData('cost', 'classique'),
+      mixte: getPieData('cost', 'mixte'),
+      eco: getPieData('cost', 'eco'),
+  };
 
   return (
     <div className="space-y-8">
@@ -174,6 +289,31 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
           </CardContent>
         </Card>
       </div>
+      
+      <Card>
+          <CardHeader>
+              <CardTitle>Répartition Détaillée par Conception</CardTitle>
+              <CardDescription>Analyse détaillée des coûts et de l'empreinte carbone pour chaque scénario.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+              <div>
+                  <h3 className="text-xl font-semibold mb-4">Répartition de l'Empreinte Carbone (tCO₂)</h3>
+                  <div className="grid md:grid-cols-3 gap-8">
+                      <DonutChartCard title="Classique" data={carbonPieData.classique} total={carbone.totalClassique} unit="tCO₂" />
+                      <DonutChartCard title="Mixte" data={carbonPieData.mixte} total={carbone.totalMixte} unit="tCO₂" />
+                      <DonutChartCard title="Éco-conception" data={carbonPieData.eco} total={carbone.totalEco} unit="tCO₂" />
+                  </div>
+              </div>
+              <div>
+                  <h3 className="text-xl font-semibold mb-4">Répartition des Coûts (€)</h3>
+                  <div className="grid md:grid-cols-3 gap-8">
+                      <DonutChartCard title="Classique" data={costPieData.classique} total={cout.totalClassique} unit="€" />
+                      <DonutChartCard title="Mixte" data={costPieData.mixte} total={cout.totalMixte} unit="€" />
+                      <DonutChartCard title="Éco-conception" data={costPieData.eco} total={cout.totalEco} unit="€" />
+                  </div>
+              </div>
+          </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,12 +1,10 @@
-
 'use client'
 
 import type { CalculationResults } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, TooltipProps } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-import { ValueKey } from "recharts/types/component/DefaultTooltipContent";
 
 interface SynthesisTabProps {
   results: CalculationResults;
@@ -34,39 +32,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const CustomPieTooltip = ({ active, payload }: TooltipProps<ValueKey, string>) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      const unit = data.payload?.unit || '';
-      const formattedValue = unit === '€'
-        ? formatCurrency(data.value as number)
-        : `${formatNumber(data.value as number)} tCO₂`;
-      return (
-        <div className="rounded-lg border bg-background p-2 shadow-sm">
-          <div className="flex justify-between items-center gap-4">
-              <span style={{color: data.payload.fill}}>{data.name}:</span>
-              <span className="font-bold">{formattedValue}</span>
-          </div>
-        </div>
-      );
-    }
-  
-    return null;
-  };
-
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/([A-Z])/g, ' $1');
-
-const PIE_COLORS = [
-    'hsl(var(--chart-2))',
-    'hsl(var(--chart-3))',
-    'hsl(var(--chart-4))',
-    'hsl(var(--chart-5))',
-    '#f97316',
-    '#f59e0b',
-    '#10b981',
-];
-
-const BETON_COLOR = '#000000'; // Black
 
 export function SynthesisTab({ results }: SynthesisTabProps) {
   const { cout, carbone, amortissement, amortissementMixte } = results;
@@ -82,29 +48,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       MixteCarbone: carbone.breakdown[key as keyof typeof carbone.breakdown]?.mixte ?? 0,
       'Éco-conceptionCarbone': carbone.breakdown[key as keyof typeof carbone.breakdown]?.eco ?? 0,
     }));
-
-  const getPieData = (breakdown: any, scenario: 'classique' | 'mixte' | 'eco', unit: string) => {
-    return Object.entries(breakdown)
-        .filter(([key, value]) => key !== 'coutCarbone' && (value as any)[scenario] > 0)
-        .map(([key, value]) => ({
-            name: capitalize(key),
-            value: (value as any)[scenario],
-            unit: unit
-        }));
-  }
-
-  const carbonPieData = {
-    classique: getPieData(carbone.breakdown, 'classique', 'tCO₂'),
-    mixte: getPieData(carbone.breakdown, 'mixte', 'tCO₂'),
-    eco: getPieData(carbone.breakdown, 'eco', 'tCO₂'),
-  };
-
-  const costPieData = {
-    classique: getPieData(cout.breakdown, 'classique', '€'),
-    mixte: getPieData(cout.breakdown, 'mixte', '€'),
-    eco: getPieData(cout.breakdown, 'eco', '€'),
-  };
-
+    
   const coutGlobalClassiqueAjuste = cout.totalClassique; // Référence, pas d'ajustement sur lui-même
 
   const summaryData = [
@@ -139,41 +83,6 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
       amortissement: amortissement,
     },
   ];
-
-  const renderPieChart = (data: {name: string, value: number, unit: string}[], title: string) => (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-                <Pie
-                    data={data}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    stroke="hsl(var(--background))"
-                    strokeWidth={2}
-                >
-                    {data.map((entry, index) => {
-                      const color = entry.name.toLowerCase().includes('béton')
-                        ? BETON_COLOR
-                        : PIE_COLORS[index % PIE_COLORS.length];
-                      return <Cell key={`cell-${index}`} fill={color} />
-                    })}
-                </Pie>
-                <Tooltip content={<CustomPieTooltip />} />
-                <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
-            </PieChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  )
 
   return (
     <div className="space-y-8">
@@ -223,30 +132,6 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
         </CardContent>
        </Card>
       
-      <div className="space-y-4">
-        <CardHeader className="p-0">
-            <CardTitle>Répartition de l'Empreinte Carbone</CardTitle>
-            <CardDescription>Analyse de la contribution de chaque poste aux émissions totales de CO₂.</CardDescription>
-        </CardHeader>
-        <div className="grid lg:grid-cols-3 gap-8">
-            {renderPieChart(carbonPieData.classique, 'Classique')}
-            {renderPieChart(carbonPieData.mixte, 'Mixte')}
-            {renderPieChart(carbonPieData.eco, 'Éco-conception')}
-        </div>
-      </div>
-      
-      <div className="space-y-4">
-        <CardHeader className="p-0">
-            <CardTitle>Répartition des Coûts</CardTitle>
-            <CardDescription>Analyse de la contribution de chaque poste au coût global du projet.</CardDescription>
-        </CardHeader>
-        <div className="grid lg:grid-cols-3 gap-8">
-            {renderPieChart(costPieData.classique, 'Classique')}
-            {renderPieChart(costPieData.mixte, 'Mixte')}
-            {renderPieChart(costPieData.eco, 'Éco-conception')}
-        </div>
-      </div>
-
       <div className="grid lg:grid-cols-2 gap-8">
         <Card>
           <CardHeader>

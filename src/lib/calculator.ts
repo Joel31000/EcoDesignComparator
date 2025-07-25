@@ -64,7 +64,7 @@ export function calculate(state: SimulationState): CalculationResults {
   
   // Carbon Footprint Calculations (in tonnes CO2)
   const carboneBetonClassique = state.volumeBeton * (state.masseBetonBasCarbone / 1000) * carbonFootprints.betonClassique;
-  const carboneBetonEco = state.volumeBetonEco * state.masseBetonBasCarbone * state.betonBasCarboneEmpreinte;
+  const carboneBetonEco = state.volumeBetonEco * (state.masseBetonBasCarbone / 1000) * state.betonBasCarboneEmpreinte;
   const carboneBetonMixte = calculateMixedValue(carboneBetonClassique, carboneBetonEco, state.pctEcoBeton);
 
   const carboneAcierClassique = state.poidsAcier * carbonFootprints.acierClassique;

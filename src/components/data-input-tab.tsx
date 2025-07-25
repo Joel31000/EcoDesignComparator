@@ -188,7 +188,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 </Select>
             </div>
             <InputField
-                label="Masse dans la formulation"
+                label="Masse ciment dans formulation"
                 id="masseBetonBasCarbone"
                 value={state.masseBetonBasCarbone}
                 unit="Kg"

@@ -229,7 +229,7 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
           {!result && !isLoading && (
               <Button onClick={handleOptimization} disabled={isLoading || !maxSurcout}>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  {isLoading ? 'Calcul en cours...' : 'Lancer l'optimisation'}
+                  {isLoading ? 'Calcul en cours...' : 'Lancer l\'optimisation'}
                 </Button>
           )}
           {result && (

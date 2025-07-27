@@ -96,18 +96,24 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
     if (!result) return;
     
     const doc = new jsPDF();
-    
+    const pageMargin = 14;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const textWidth = pageWidth - (pageMargin * 2);
+
     doc.setFontSize(18);
-    doc.text('Rapport d\'Optimisation de Design', 14, 22);
+    doc.text('Rapport d\'Optimisation de Design', pageMargin, 22);
     
     doc.setFontSize(12);
-    doc.text(`Basé sur un surcoût maximum admissible de ${maxSurcout}%.`, 14, 32);
+    doc.text(`Basé sur un surcoût maximum admissible de ${maxSurcout}%.`, pageMargin, 32);
     
     doc.setFontSize(10);
-    doc.text(doc.splitTextToSize(result.explanation, 180), 14, 42);
+    const explanationLines = doc.splitTextToSize(result.explanation, textWidth);
+    doc.text(explanationLines, pageMargin, 42);
+
+    const lastTextY = 42 + (explanationLines.length * 5); // Approximate height of the text block
     
     (doc as any).autoTable({
-        startY: 65,
+        startY: lastTextY + 10,
         head: [['Indicateur', 'Valeur']],
         body: [
             ['Coût Total Optimisé', formatCurrency(result.optimizedMetrics.coutTotal)],
@@ -121,7 +127,7 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
     (doc as any).autoTable({
         startY: (doc as any).autoTable.previous.finalY + 10,
         head: [['Matériau / Méthode Éco', 'Pourcentage Recommandé']],
-        body: Object.entries(result.optimizedPercentages).map(([key, value]) => [key, `${formatNumber(value)}%`]),
+        body: Object.entries(result.optimizedPercentages).map(([key, value]) => [key.replace('pctEco', ''), `${formatNumber(value)}%`]),
         theme: 'grid'
     });
     

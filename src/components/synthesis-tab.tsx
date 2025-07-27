@@ -120,10 +120,10 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-              <foreignObject x="50%" y="50%" width="120" height="60" style={{ transform: 'translate(-60px, -30px)' }}>
+              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -35px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
-                    <p className="font-bold text-lg text-foreground">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
+                    <p className="font-bold text-base text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
                  </div>
               </foreignObject>
             </PieChart>

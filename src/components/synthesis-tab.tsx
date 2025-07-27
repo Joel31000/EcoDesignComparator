@@ -52,7 +52,7 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} className="font-semibold">
+      <text x={cx} y={cy} dy={-8} textAnchor="middle" fill={fill} className="font-semibold">
         {payload.name}
       </text>
       <Sector
@@ -120,7 +120,7 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -35px)' }}>
+              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -45px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
                     <p className="font-bold text-base text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>

@@ -111,3 +111,26 @@ export interface CalculationResults {
   amortissement: number;
   amortissementMixte: number;
 }
+
+
+export interface OptimizationInput {
+  simulationState: SimulationState;
+  maxSurcoutPercentage: number;
+}
+
+export interface OptimizationOutput {
+  optimizedPercentages: {
+    pctEcoBeton: number;
+    pctEcoAcier: number;
+    pctEcoCuivre: number;
+    pctEcoEnrobes: number;
+    pctEcoDeplacements: number;
+  };
+  optimizedMetrics: {
+    coutTotal: number;
+    carboneTotal: number;
+    surcout: number;
+    economieCarbone: number;
+  };
+  explanation: string;
+}

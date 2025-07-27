@@ -11,13 +11,21 @@ export default function Home() {
     const [state, setState] = useState<SimulationState>(defaultSimulationState);
     
     const handleStateChange = (newState: Partial<SimulationState>) => {
-      setState(prevState => ({ ...prevState, ...newState }));
+      setState(prevState => {
+        const updatedState = { ...prevState, ...newState };
+        // Recalculate results with the new state to ensure they are up to date
+        const newResults = calculate(updatedState);
+        return { ...updatedState, results: newResults };
+      });
     };
 
     const handleSliderChange = (key: keyof SimulationState, value: number[]) => {
-      setState(prevState => ({ ...prevState, [key]: value[0] }));
+      setState(prevState => {
+        const updatedState = { ...prevState, [key]: value[0] };
+        return { ...updatedState };
+      });
     }
-
+    
     const results = calculate(state);
 
     return (

@@ -11,6 +11,7 @@ import { SynthesisTab } from "./synthesis-tab";
 import type { SimulationState, CalculationResults } from "@/types";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { OptimizationDialog } from './optimization-dialog';
 
 interface DashboardProps {
   state: SimulationState;
@@ -71,8 +72,8 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
 
   return (
     <Tabs defaultValue="data-input" className="w-full" onValueChange={setActiveTab}>
-      <div className="relative flex justify-center mb-8">
-        <TabsList className="grid w-full max-w-2xl grid-cols-1 md:grid-cols-3 p-2 h-auto gap-2 bg-transparent">
+      <div className="relative flex items-center justify-center mb-8">
+        <TabsList className="grid w-full max-w-4xl grid-cols-1 md:grid-cols-4 p-2 h-auto gap-2 bg-transparent">
           <TabsTrigger 
             value="data-input" 
             className="py-3 text-base text-foreground font-semibold shadow-md transition-all
@@ -97,6 +98,7 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
           >
             Synthèse &amp; Visualisation
           </TabsTrigger>
+          <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange}/>
         </TabsList>
          <div className="absolute right-0 top-1/2 -translate-y-1/2">
             <Button onClick={handleExportToPDF} disabled={isExporting}>

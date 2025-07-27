@@ -72,8 +72,8 @@ const renderActiveShape = (props: any) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">{payload.name}</text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs font-semibold">{payload.name}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={16} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
         {`${unit === '€' ? formatCurrency(value) : formatNumber(value) + ` ${unit}`} (${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
@@ -178,13 +178,49 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
   ];
 
   const getPieData = (type: 'cost' | 'carbon', scenario: 'classique' | 'mixte' | 'eco') => {
-      const breakdown = type === 'cost' ? cout.breakdown : carbone.breakdown;
-      return Object.keys(breakdown)
+      let breakdown: any;
+      if (type === 'cost') {
+        breakdown = cout.breakdown;
+      } else {
+        breakdown = carbone.breakdown;
+      }
+      
+      let data = [];
+      
+      if (type === 'cost') {
+         data = Object.keys(breakdown)
           .filter(key => key !== 'coutCarbone' && (breakdown as any)[key][scenario] > 0)
           .map(key => ({
               name: capitalize(key),
               value: (breakdown as any)[key][scenario],
           }));
+      } else {
+        const carbonBreakdown = breakdown as typeof carbone.breakdown;
+        data = Object.keys(carbonBreakdown)
+          .filter(key => {
+              const typedKey = key as keyof typeof carbonBreakdown;
+              const scenarioData = carbonBreakdown[typedKey];
+              if ('classique' in scenarioData) {
+                  return scenarioData[scenario] > 0;
+              }
+              return false; // engins doesn't have all scenarios
+          })
+          .map(key => {
+              const typedKey = key as keyof typeof carbonBreakdown;
+              const scenarioData = carbonBreakdown[typedKey];
+              return {
+                  name: capitalize(key),
+                  value: (scenarioData as any)[scenario],
+              };
+          });
+
+        // Handle 'engins' separately as it has a different structure
+        if (carbonBreakdown.engins[scenario as keyof typeof carbonBreakdown.engins] > 0) {
+            data.push({ name: 'Engins', value: carbonBreakdown.engins[scenario as keyof typeof carbonBreakdown.engins] });
+        }
+      }
+
+      return data;
   };
 
   const carbonPieData = {

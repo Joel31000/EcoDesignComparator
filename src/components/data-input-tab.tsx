@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { projectTypes, betonBasCarboneOptions } from "@/lib/data";
-import { AISuggestion } from "./ai-suggestion";
 import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend, Warehouse } from 'lucide-react';
 import { Separator } from "./ui/separator";
 import { Checkbox } from "./ui/checkbox";
@@ -114,7 +113,6 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
               </Select>
             </div>
             <div className="flex items-end">
-               <AISuggestion />
             </div>
           </div>
         </CardContent>

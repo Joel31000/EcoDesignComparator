@@ -17,7 +17,7 @@ const formatNumber = (value: number) => new Intl.NumberFormat('fr-FR', { maximum
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border bg-background p-2 shadow-sm">
+      <div className="rounded-lg border bg-background/80 backdrop-blur-sm p-2 shadow-sm">
         <p className="mb-2 font-medium">{label}</p>
         <div className="space-y-1">
           {payload.map((p: any) => (
@@ -35,7 +35,16 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/([A-Z])/g, ' $1');
 
-const PIE_CHART_COLORS = ["#4d7c0f", "#a3e635", "#a1a1aa", "#64748b", "#334155", "#f97316", "#f59e0b", "#eab308"];
+const PIE_CHART_COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+  "#f97316",
+  "#f59e0b",
+  "#eab308"
+];
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -52,7 +61,7 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={-8} textAnchor="middle" fill={fill} className="font-semibold">
+      <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-sm font-semibold">
         {payload.name}
       </text>
       <Sector
@@ -120,10 +129,10 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -45px)' }}>
+              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -50px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
-                    <p className="font-bold text-base text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
+                    <p className="font-bold text-lg text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
                  </div>
               </foreignObject>
             </PieChart>
@@ -267,7 +276,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                             <TableCell className="text-right">
                                 {formatCurrency(item.coutGlobal)}
                                 {item.name !== 'Classique' && (
-                                    <span className={`ml-2 font-normal ${item.coutGlobalEcartPct > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                    <span className={`ml-2 font-normal ${item.coutGlobalEcartPct > 0 ? 'text-red-500' : 'text-green-500'}`}>
                                         ({item.coutGlobalEcartPct > 0 ? '+' : ''}{formatNumber(item.coutGlobalEcartPct)}%)
                                     </span>
                                 )}
@@ -298,14 +307,14 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={barChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${Number(value)/1000}k`} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted))' }}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" vertical={false} />
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${Number(value)/1000}k`} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent) / 0.5)' }}/>
                 <Legend iconSize={10} />
-                <Bar dataKey="ClassiqueCoût" name="Classique" fill="#a1a1aa" radius={[4, 4, 0, 0]} unit="€" />
-                <Bar dataKey="MixteCoût" name="Mixte" fill="#a3e635" radius={[4, 4, 0, 0]} unit="€" />
-                <Bar dataKey="Éco-conceptionCoût" name="Éco-conception" fill="#4d7c0f" radius={[4, 4, 0, 0]} unit="€" />
+                <Bar dataKey="ClassiqueCoût" name="Classique" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} unit="€" />
+                <Bar dataKey="MixteCoût" name="Mixte" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} unit="€" />
+                <Bar dataKey="Éco-conceptionCoût" name="Éco-conception" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} unit="€" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -318,14 +327,14 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={barChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value} t`} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted))' }}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" vertical={false} />
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value} t`} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent) / 0.5)' }}/>
                 <Legend iconSize={10} />
-                <Bar dataKey="ClassiqueCarbone" name="Classique" fill="#a1a1aa" radius={[4, 4, 0, 0]} unit="tCO₂" />
-                <Bar dataKey="MixteCarbone" name="Mixte" fill="#a3e635" radius={[4, 4, 0, 0]} unit="tCO₂" />
-                <Bar dataKey="Éco-conceptionCarbone" name="Éco-conception" fill="#4d7c0f" radius={[4, 4, 0, 0]} unit="tCO₂" />
+                <Bar dataKey="ClassiqueCarbone" name="Classique" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} unit="tCO₂" />
+                <Bar dataKey="MixteCarbone" name="Mixte" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} unit="tCO₂" />
+                <Bar dataKey="Éco-conceptionCarbone" name="Éco-conception" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} unit="tCO₂" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

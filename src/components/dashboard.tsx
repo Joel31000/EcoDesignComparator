@@ -30,14 +30,13 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
     if (input) {
       try {
         const canvas = await html2canvas(input, {
-          scale: 2, // Augmente la résolution
+          scale: 2,
           useCORS: true,
           logging: false,
-          backgroundColor: null, // Fond transparent pour que le CSS du thème s'applique
+          backgroundColor: null, 
         });
         const imgData = canvas.toDataURL('image/png');
         
-        // orientation 'l' pour paysage
         const pdf = new jsPDF('l', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -72,35 +71,32 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
 
   return (
     <Tabs defaultValue="data-input" className="w-full" onValueChange={setActiveTab}>
-      <div className="relative flex items-center justify-center mb-8">
-        <TabsList className="grid w-full max-w-4xl grid-cols-1 md:grid-cols-4 p-2 h-auto gap-2 bg-transparent">
+      <div className="flex items-center justify-between mb-8">
+        <TabsList className="bg-transparent p-0 gap-1">
           <TabsTrigger 
             value="data-input" 
-            className="py-3 text-base text-foreground font-semibold shadow-md transition-all
-                       bg-[hsl(var(--tab-1))] 
-                       data-[state=active]:bg-[hsl(var(--tab-1-active))] data-[state=active]:text-primary-foreground data-[state=active]:scale-105"
+            className="text-base text-muted-foreground font-semibold transition-all
+                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
           >
             Données d'Entrée
           </TabsTrigger>
           <TabsTrigger 
             value="comparison" 
-            className="py-3 text-base text-foreground font-semibold shadow-md transition-all
-                       bg-[hsl(var(--tab-2))] 
-                       data-[state=active]:bg-[hsl(var(--tab-2-active))] data-[state=active]:text-primary-foreground data-[state=active]:scale-105"
+            className="text-base text-muted-foreground font-semibold transition-all
+                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
           >
             Comparaison Détaillée
           </TabsTrigger>
           <TabsTrigger 
             value="synthesis" 
-            className="py-3 text-base text-foreground font-semibold shadow-md transition-all
-                       bg-[hsl(var(--tab-3))] 
-                       data-[state=active]:bg-[hsl(var(--tab-3-active))] data-[state=active]:text-primary-foreground data-[state=active]:scale-105"
+            className="text-base text-muted-foreground font-semibold transition-all
+                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
           >
             Synthèse &amp; Visualisation
           </TabsTrigger>
           <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange}/>
         </TabsList>
-         <div className="absolute right-0 top-1/2 -translate-y-1/2">
+         <div>
             <Button onClick={handleExportToPDF} disabled={isExporting}>
                 {isExporting ? (
                     <Loader2 className="animate-spin" />

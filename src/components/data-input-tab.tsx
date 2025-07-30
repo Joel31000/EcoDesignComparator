@@ -167,38 +167,49 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardTitle className="flex items-center gap-2"><Warehouse className="text-primary"/>Matériaux</CardTitle>
           <CardDescription>Paramètres spécifiques aux matériaux bas-carbone.</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6 items-start">
-            <div className="space-y-2">
-                <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
-                <Select
-                    value={String(state.betonBasCarboneEmpreinte)}
-                    onValueChange={(value) => onStateChange({ betonBasCarboneEmpreinte: Number(value) })}
-                >
-                    <SelectTrigger id="betonBasCarboneEmpreinte">
-                        <SelectValue placeholder="Sélectionner un type de béton" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {betonBasCarboneOptions.map(option => (
-                            <SelectItem key={option.name} value={String(option.empreinte)}>
-                                {option.name} ({option.empreinte} tCO₂eq/m³)
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+        <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-x-8 gap-y-4 items-end">
+                <div className="space-y-2">
+                    <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
+                    <Select
+                        value={String(state.betonBasCarboneEmpreinte)}
+                        onValueChange={(value) => onStateChange({ betonBasCarboneEmpreinte: Number(value) })}
+                    >
+                        <SelectTrigger id="betonBasCarboneEmpreinte">
+                            <SelectValue placeholder="Sélectionner un type de béton" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {betonBasCarboneOptions.map(option => (
+                                <SelectItem key={option.name} value={String(option.empreinte)}>
+                                    {option.name} ({option.empreinte} tCO₂eq/m³)
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                
+                <div className="flex items-center space-x-2 pb-2 justify-center">
+                    <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={(checked) => onStateChange({ isBetonArme: !!checked })} />
+                    <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none">
+                        Béton armé
+                    </Label>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="masseBetonBasCarbone">Masse ciment dans formulation</Label>
+                    <div className="flex items-center gap-2">
+                    <Input
+                        id="masseBetonBasCarbone"
+                        type="number"
+                        value={state.masseBetonBasCarbone}
+                        onChange={(e) => handleInputChange("masseBetonBasCarbone", e.target.value)}
+                        className="flex-grow"
+                    />
+                    <span className="text-sm text-muted-foreground">Kg</span>
+                    </div>
+                </div>
             </div>
-            <InputField
-                label="Masse ciment dans formulation"
-                id="masseBetonBasCarbone"
-                value={state.masseBetonBasCarbone}
-                unit="Kg"
-                onChange={handleInputChange}
-            />
-            <div className="flex items-center space-x-2 pt-6">
-                <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={(checked) => onStateChange({ isBetonArme: !!checked })} />
-                <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Béton armé
-                </Label>
-            </div>
+
             <div className="space-y-2">
                 <Label htmlFor="empreinteAcierBasCarbone">Type d'acier/procédé</Label>
                 <Select

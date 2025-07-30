@@ -54,11 +54,20 @@ export interface SimulationState {
   betonBasCarboneEmpreinte: number;
   masseBetonBasCarbone: number;
   isBetonArme: boolean;
+
+  // Low carbon steel type
+  empreinteAcierBasCarbone: number;
 }
 
 export interface BetonBasCarboneOption {
   name: string;
   empreinte: number;
+}
+
+export interface AcierOption {
+  name: string;
+  empreinte: number;
+  displayValue: string;
 }
 
 export interface Breakdown {

@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { projectTypes, betonBasCarboneOptions } from "@/lib/data";
+import { projectTypes, betonBasCarboneOptions, acierOptions } from "@/lib/data";
 import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend, Warehouse } from 'lucide-react';
 import { Separator } from "./ui/separator";
 import { Checkbox } from "./ui/checkbox";
@@ -167,7 +167,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardTitle className="flex items-center gap-2"><Warehouse className="text-primary"/>Matériaux</CardTitle>
           <CardDescription>Paramètres spécifiques aux matériaux bas-carbone.</CardDescription>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6 items-end">
+        <CardContent className="grid md:grid-cols-2 gap-6 items-start">
             <div className="space-y-2">
                 <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
                 <Select
@@ -193,11 +193,29 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 unit="Kg"
                 onChange={handleInputChange}
             />
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pt-6">
                 <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={(checked) => onStateChange({ isBetonArme: !!checked })} />
                 <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Béton armé
                 </Label>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="empreinteAcierBasCarbone">Type d'acier/procédé</Label>
+                <Select
+                    value={String(state.empreinteAcierBasCarbone)}
+                    onValueChange={(value) => onStateChange({ empreinteAcierBasCarbone: Number(value) })}
+                >
+                    <SelectTrigger id="empreinteAcierBasCarbone">
+                        <SelectValue placeholder="Sélectionner un type d'acier" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {acierOptions.map(option => (
+                            <SelectItem key={option.name} value={String(option.empreinte)}>
+                                {option.name} ({option.displayValue})
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
         </CardContent>
        </Card>

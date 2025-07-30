@@ -1,4 +1,4 @@
-import type { SimulationState, BetonBasCarboneOption } from '@/types';
+import type { SimulationState, BetonBasCarboneOption, AcierOption } from '@/types';
 
 export const projectTypes = ['Travaux', 'Services', 'Fourniture'];
 
@@ -33,6 +33,16 @@ export const betonBasCarboneOptions: BetonBasCarboneOption[] = [
   { name: 'CEM III/C (ECOCEM Fos/Mer)', empreinte: 0.203 },
   { name: 'CEM III/C (ECOCEM Dunkerque)', empreinte: 0.209 },
   { name: 'Ciment CSS (ECOCEM)', empreinte: 0.108 },
+];
+
+export const acierOptions: AcierOption[] = [
+  { name: 'Acier filière haut fourneau (BOF)', empreinte: 1.8, displayValue: '1,8 teqCO₂/t' },
+  { name: 'Acier filière four à arc électrique (EAF, recyclé)', empreinte: 0.425, displayValue: '0,35 – 0,5 teqCO₂/t' },
+  { name: 'Acier «XCarb» (EAF, énergie renouvelable)', empreinte: 0.3, displayValue: '0,3 teqCO₂/t' },
+  { name: 'Acier rebar (armature acier pour béton armé)', empreinte: 0.225, displayValue: '0,22 – 0,23 teqCO₂/t' },
+  { name: 'Acier inoxydable (four électrique)', empreinte: 0.65, displayValue: '0,5 – 0,8 teqCO₂/t' },
+  { name: 'Acier DRI-EAF (Réduction Directe Fer au gaz naturel, couplée EAF)', empreinte: 1.35, displayValue: '1,10 - 1,6 teqCO₂/t' },
+  { name: 'Acier H2-DRI-EAF (Réduction Fer à l\'hydrogène vert, couplée EAF)', empreinte: 0.7, displayValue: '0,7 teqCO₂/t' },
 ];
 
 export const defaultSimulationState: SimulationState = {
@@ -91,13 +101,16 @@ export const defaultSimulationState: SimulationState = {
   betonBasCarboneEmpreinte: betonBasCarboneOptions[0].empreinte,
   masseBetonBasCarbone: 350, // kg
   isBetonArme: false,
+
+  // Low carbon steel
+  empreinteAcierBasCarbone: acierOptions[0].empreinte,
 };
 
 // Carbon footprints (in T eq CO₂ / unit)
 export const carbonFootprints = {
   betonClassique: 0.800, // tCO2eq/m3
-  acierClassique: 1.8, // T CO2 / tonne
-  acierBasCarbone: 0.4, // T CO2 / tonne
+  acierClassique: 1.8, // T CO2 / tonne // This is now the default/fixed value for classic scenario
+  // acierBasCarbone is now dynamic based on user selection
   cuivreClassique: 4.5, // T CO2 / tonne
   cuivreRecycle: 1.5, // T CO2 / tonne (recycled copper has lower footprint)
   enrobeChaud: 0.05, // T CO2 / m³ (assuming density ~1 t/m³)

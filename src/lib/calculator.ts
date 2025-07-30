@@ -70,10 +70,10 @@ export function calculate(state: SimulationState): CalculationResults {
   const carboneBetonMixte = calculateMixedValue(carboneBetonClassique, carboneBetonEco, state.pctEcoBeton);
 
   const carboneAcierClassique = state.poidsAcier * carbonFootprints.acierClassique;
-  const carboneAcierEco = state.poidsAcierEco * carbonFootprints.acierBasCarbone;
+  const carboneAcierEco = state.poidsAcierEco * state.empreinteAcierBasCarbone;
   const carboneAcierMixte = calculateMixedValue(
-      state.poidsAcier * carbonFootprints.acierClassique,
-      state.poidsAcierEco * carbonFootprints.acierBasCarbone,
+      carboneAcierClassique,
+      carboneAcierEco,
       state.pctEcoAcier
   );
 
@@ -178,5 +178,3 @@ export function calculate(state: SimulationState): CalculationResults {
     amortissementMixte,
   };
 }
-
-    

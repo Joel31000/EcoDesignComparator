@@ -1,6 +1,8 @@
 export interface SimulationState {
   projectDescription: string;
   projectType: string;
+  projectLocation: string;
+  projectGpsCoordinates: string;
   
   // Quantities
   volumeBeton: number;

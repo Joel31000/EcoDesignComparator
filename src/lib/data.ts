@@ -48,6 +48,8 @@ export const acierOptions: AcierOption[] = [
 export const defaultSimulationState: SimulationState = {
   projectDescription: '',
   projectType: 'Travaux',
+  projectLocation: '',
+  projectGpsCoordinates: '',
   
   // Quantities
   volumeBeton: 1000, // m³

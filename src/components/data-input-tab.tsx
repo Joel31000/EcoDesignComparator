@@ -100,11 +100,11 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
               placeholder="Ex: Construction d'un pont de 50m"
             />
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="projectType">Type de Projet</Label>
               <Select value={state.projectType} onValueChange={(value) => onStateChange({ projectType: value })}>
-                <SelectTrigger id="projectType" className="w-full md:w-[280px]">
+                <SelectTrigger id="projectType">
                   <SelectValue placeholder="Sélectionner un type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -112,7 +112,25 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-end">
+            <div className="space-y-2">
+              <Label htmlFor="projectLocation">Localisation du projet</Label>
+              <Input
+                id="projectLocation"
+                type="text"
+                value={state.projectLocation}
+                onChange={(e) => onStateChange({ projectLocation: e.target.value })}
+                placeholder="Ex: 12420 Ste Geneviève sur Argence"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="projectGpsCoordinates">Coordonnées GPS du projet en degrés sexagésimaux</Label>
+              <Input
+                id="projectGpsCoordinates"
+                type="text"
+                value={state.projectGpsCoordinates}
+                onChange={(e) => onStateChange({ projectGpsCoordinates: e.target.value })}
+                placeholder="Ex: N44.829758°E2.740149°"
+              />
             </div>
           </div>
         </CardContent>
@@ -248,7 +266,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><DollarSign className="text-primary"/>Ajustement des Prix</CardTitle>
-          <CardDescription>Ajustez les prix pour voir l'impact en temps réel.</CardDescription>
+          <CardDescription>Ajustez les prix qui intègrent la main d'oeuvre.</CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
             <InputField label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} unit="€/m³" onChange={handleInputChange} />

@@ -291,17 +291,23 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardDescription>Ajustez les prix qui intègrent la main d'oeuvre.</CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
-            <InputField label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} unit="€/m³" onChange={handleInputChange} />
-            <InputField label="Prix Béton Bas Carbone" id="prixBetonBasCarbone" value={state.prixBetonBasCarbone} unit="€/m³" onChange={handleInputChange} />
-            <InputField label="Prix Acier Classique" id="prixAcierClassique" value={state.prixAcierClassique} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Aluminium Classique" id="prixAluminiumClassique" value={state.prixAluminiumClassique} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Aluminium Bas Carbone" id="prixAluminiumBasCarbone" value={state.prixAluminiumBasCarbone} unit="€/t" onChange={handleInputChange} />
-            <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
-            <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
-            <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
+            <div className="space-y-4">
+              <InputField label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} unit="€/m³" onChange={handleInputChange} />
+              <InputField label="Prix Béton Bas Carbone" id="prixBetonBasCarbone" value={state.prixBetonBasCarbone} unit="€/m³" onChange={handleInputChange} />
+              <InputField label="Prix Acier Classique" id="prixAcierClassique" value={state.prixAcierClassique} unit="€/t" onChange={handleInputChange} />
+              <InputField label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} unit="€/t" onChange={handleInputChange} />
+            </div>
+            <div className="space-y-4">
+              <InputField label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} unit="€/t" onChange={handleInputChange} />
+              <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
+              <InputField label="Prix Aluminium Classique" id="prixAluminiumClassique" value={state.prixAluminiumClassique} unit="€/t" onChange={handleInputChange} />
+              <InputField label="Prix Aluminium Bas Carbone" id="prixAluminiumBasCarbone" value={state.prixAluminiumBasCarbone} unit="€/t" onChange={handleInputChange} />
+            </div>
+            <div className="space-y-4">
+              <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
+              <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
+              <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
+            </div>
         </CardContent>
       </Card>
 

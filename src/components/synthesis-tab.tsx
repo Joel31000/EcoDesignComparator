@@ -161,11 +161,25 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
         }
     }
 
+    // Ensure cout.breakdown[typedKey] exists before accessing its properties
+    const costBreakdown = cout.breakdown[typedKey];
+    if (!costBreakdown) {
+      return {
+        name: capitalize(key),
+        ClassiqueCoût: 0,
+        MixteCoût: 0,
+        'Éco-conceptionCoût': 0,
+        ClassiqueCarbone: 0,
+        MixteCarbone: 0,
+        'Éco-conceptionCarbone': 0,
+      }
+    }
+
     return {
       name: capitalize(key),
-      ClassiqueCoût: cout.breakdown[typedKey].classique,
-      MixteCoût: cout.breakdown[typedKey].mixte,
-      'Éco-conceptionCoût': cout.breakdown[typedKey].eco,
+      ClassiqueCoût: costBreakdown.classique,
+      MixteCoût: costBreakdown.mixte,
+      'Éco-conceptionCoût': costBreakdown.eco,
       ClassiqueCarbone: carbonData?.classique ?? 0,
       MixteCarbone: carbonData?.mixte ?? 0,
       'Éco-conceptionCarbone': carbonData?.eco ?? 0,

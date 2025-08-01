@@ -61,7 +61,7 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-       <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-sm font-semibold">
+      <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-xs font-semibold">
         {payload.name}
       </text>
       <Sector
@@ -84,11 +84,11 @@ const renderActiveShape = (props: any) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={-6} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs font-bold">{payload.name}</text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={8} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs font-bold">{payload.name}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={12} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">
         {unit === '€' ? formatCurrency(value) : `${formatNumber(value)} ${unit}`}
       </text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={22} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={24} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
@@ -129,10 +129,10 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-               <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -50px)' }}>
+               <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -40px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
-                    <p className="font-bold text-lg text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
+                    <p className="font-bold text-base text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
                  </div>
               </foreignObject>
             </PieChart>
@@ -149,6 +149,7 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
 
   const barChartData = costCategories.map((key) => {
     const typedKey = key as keyof typeof cout.breakdown;
+    const costBreakdown = cout.breakdown[typedKey];
     let carbonData: { classique: number, mixte: number, eco: number } | undefined;
 
     if (key === 'engins') {
@@ -161,25 +162,11 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
         }
     }
 
-    // Ensure cout.breakdown[typedKey] exists before accessing its properties
-    const costBreakdown = cout.breakdown[typedKey];
-    if (!costBreakdown) {
-      return {
-        name: capitalize(key),
-        ClassiqueCoût: 0,
-        MixteCoût: 0,
-        'Éco-conceptionCoût': 0,
-        ClassiqueCarbone: 0,
-        MixteCarbone: 0,
-        'Éco-conceptionCarbone': 0,
-      }
-    }
-
     return {
       name: capitalize(key),
-      ClassiqueCoût: costBreakdown.classique,
-      MixteCoût: costBreakdown.mixte,
-      'Éco-conceptionCoût': costBreakdown.eco,
+      ClassiqueCoût: costBreakdown?.classique || 0,
+      MixteCoût: costBreakdown?.mixte || 0,
+      'Éco-conceptionCoût': costBreakdown?.eco || 0,
       ClassiqueCarbone: carbonData?.classique ?? 0,
       MixteCarbone: carbonData?.mixte ?? 0,
       'Éco-conceptionCarbone': carbonData?.eco ?? 0,

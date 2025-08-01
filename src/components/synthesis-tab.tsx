@@ -61,7 +61,7 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-sm font-semibold">
+       <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-sm font-semibold">
         {payload.name}
       </text>
       <Sector
@@ -129,7 +129,7 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-              <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -50px)' }}>
+               <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -50px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
                     <p className="font-bold text-lg text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
@@ -145,17 +145,32 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
 export function SynthesisTab({ results }: SynthesisTabProps) {
   const { cout, carbone, amortissement, amortissementMixte } = results;
 
-  const barChartData = Object.keys(cout.breakdown)
-    .filter((key) => key !== 'coutCarbone')
-    .map((key) => ({
+  const costCategories = ['beton', 'acier', 'cuivre', 'aluminium', 'enrobes', 'transportMarchandises', 'deplacementsPersonnel', 'energie', 'engins'];
+
+  const barChartData = costCategories.map((key) => {
+    const typedKey = key as keyof typeof cout.breakdown;
+    let carbonData: { classique: number, mixte: number, eco: number } | undefined;
+
+    if (key === 'engins') {
+        const enginsData = carbone.breakdown.engins;
+        carbonData = { classique: enginsData.classique, mixte: enginsData.mixte, eco: enginsData.eco };
+    } else {
+        const breakdownData = carbone.breakdown[key as keyof Omit<typeof carbone.breakdown, 'engins'>];
+        if (breakdownData) {
+            carbonData = { classique: breakdownData.classique, mixte: breakdownData.mixte, eco: breakdownData.eco };
+        }
+    }
+
+    return {
       name: capitalize(key),
-      ClassiqueCoût: cout.breakdown[key as keyof typeof cout.breakdown].classique,
-      MixteCoût: cout.breakdown[key as keyof typeof cout.breakdown].mixte,
-      'Éco-conceptionCoût': cout.breakdown[key as keyof typeof cout.breakdown].eco,
-      ClassiqueCarbone: carbone.breakdown[key as keyof typeof carbone.breakdown]?.classique ?? 0,
-      MixteCarbone: carbone.breakdown[key as keyof typeof carbone.breakdown]?.mixte ?? 0,
-      'Éco-conceptionCarbone': carbone.breakdown[key as keyof typeof carbone.breakdown]?.eco ?? 0,
-    }));
+      ClassiqueCoût: cout.breakdown[typedKey].classique,
+      MixteCoût: cout.breakdown[typedKey].mixte,
+      'Éco-conceptionCoût': cout.breakdown[typedKey].eco,
+      ClassiqueCarbone: carbonData?.classique ?? 0,
+      MixteCarbone: carbonData?.mixte ?? 0,
+      'Éco-conceptionCarbone': carbonData?.eco ?? 0,
+    };
+  });
     
   const coutGlobalClassiqueAjuste = cout.totalClassique; 
 

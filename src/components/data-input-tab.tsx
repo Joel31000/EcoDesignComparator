@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { projectTypes, betonBasCarboneOptions, acierOptions } from "@/lib/data";
+import { projectTypes, betonBasCarboneOptions, acierOptions, aluminiumOptions } from "@/lib/data";
 import { Package, Fuel, DollarSign, Sprout, Truck, Users, HardHat, Settings, Blend, Warehouse } from 'lucide-react';
 import { Separator } from "./ui/separator";
 import { Checkbox } from "./ui/checkbox";
@@ -152,6 +152,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 <MaterialInputField label="Béton" idClassique="volumeBeton" idEco="volumeBetonEco" valueClassique={state.volumeBeton} valueEco={state.volumeBetonEco} unit="m³" onChange={handleInputChange} />
                 <MaterialInputField label="Acier" idClassique="poidsAcier" idEco="poidsAcierEco" valueClassique={state.poidsAcier} valueEco={state.poidsAcierEco} unit="tonnes" onChange={handleInputChange} />
                 <MaterialInputField label="Cuivre" idClassique="poidsCuivre" idEco="poidsCuivreEco" valueClassique={state.poidsCuivre} valueEco={state.poidsCuivreEco} unit="tonnes" onChange={handleInputChange} />
+                <MaterialInputField label="Aluminium" idClassique="poidsAluminium" idEco="poidsAluminiumEco" valueClassique={state.poidsAluminium} valueEco={state.poidsAluminiumEco} unit="tonnes" onChange={handleInputChange} />
                 <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m³" onChange={handleInputChange} />
             </div>
           </CardContent>
@@ -228,23 +229,43 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="empreinteAcierBasCarbone">Type d'acier/procédé</Label>
-                <Select
-                    value={String(state.empreinteAcierBasCarbone)}
-                    onValueChange={(value) => onStateChange({ empreinteAcierBasCarbone: Number(value) })}
-                >
-                    <SelectTrigger id="empreinteAcierBasCarbone">
-                        <SelectValue placeholder="Sélectionner un type d'acier" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {acierOptions.map(option => (
-                            <SelectItem key={option.name} value={String(option.empreinte)}>
-                                {option.name} ({option.displayValue})
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="empreinteAcierBasCarbone">Type d'acier/procédé</Label>
+                    <Select
+                        value={String(state.empreinteAcierBasCarbone)}
+                        onValueChange={(value) => onStateChange({ empreinteAcierBasCarbone: Number(value) })}
+                    >
+                        <SelectTrigger id="empreinteAcierBasCarbone">
+                            <SelectValue placeholder="Sélectionner un type d'acier" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {acierOptions.map(option => (
+                                <SelectItem key={option.name} value={String(option.empreinte)}>
+                                    {option.name} ({option.displayValue})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="empreinteAluminiumBasCarbone">Type d'aluminium/procédé</Label>
+                    <Select
+                        value={String(state.empreinteAluminiumBasCarbone)}
+                        onValueChange={(value) => onStateChange({ empreinteAluminiumBasCarbone: Number(value) })}
+                    >
+                        <SelectTrigger id="empreinteAluminiumBasCarbone">
+                            <SelectValue placeholder="Sélectionner un type d'aluminium" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {aluminiumOptions.map(option => (
+                                <SelectItem key={option.name} value={String(option.empreinte)}>
+                                    {option.name} ({option.displayValue})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
         </CardContent>
        </Card>
@@ -258,6 +279,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <PercentageSlider label="Béton Bas Carbone" id="pctEcoBeton" value={state.pctEcoBeton} onSliderChange={onSliderChange} />
             <PercentageSlider label="Acier Bas Carbone" id="pctEcoAcier" value={state.pctEcoAcier} onSliderChange={onSliderChange} />
             <PercentageSlider label="Cuivre Recyclé" id="pctEcoCuivre" value={state.pctEcoCuivre} onSliderChange={onSliderChange} />
+            <PercentageSlider label="Aluminium Bas Carbone" id="pctEcoAluminium" value={state.pctEcoAluminium} onSliderChange={onSliderChange} />
             <PercentageSlider label="Enrobé à Froid" id="pctEcoEnrobes" value={state.pctEcoEnrobes} onSliderChange={onSliderChange} />
             <PercentageSlider label="Déplacements Électriques" id="pctEcoDeplacements" value={state.pctEcoDeplacements} onSliderChange={onSliderChange} />
         </CardContent>
@@ -275,6 +297,8 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <InputField label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} unit="€/t" onChange={handleInputChange} />
             <InputField label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} unit="€/t" onChange={handleInputChange} />
             <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Aluminium Classique" id="prixAluminiumClassique" value={state.prixAluminiumClassique} unit="€/t" onChange={handleInputChange} />
+            <InputField label="Prix Aluminium Bas Carbone" id="prixAluminiumBasCarbone" value={state.prixAluminiumBasCarbone} unit="€/t" onChange={handleInputChange} />
             <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
             <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
             <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />

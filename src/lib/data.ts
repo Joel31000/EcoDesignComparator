@@ -1,4 +1,4 @@
-import type { SimulationState, BetonBasCarboneOption, AcierOption } from '@/types';
+import type { SimulationState, BetonBasCarboneOption, AcierOption, AluminiumOption } from '@/types';
 
 export const projectTypes = ['Travaux', 'Services', 'Fourniture'];
 
@@ -45,6 +45,14 @@ export const acierOptions: AcierOption[] = [
   { name: 'Acier H2-DRI-EAF (Réduction Fer à l\'hydrogène vert, couplée EAF)', empreinte: 0.7, displayValue: '0,7 teqCO₂/t' },
 ];
 
+export const aluminiumOptions: AluminiumOption[] = [
+    { name: 'Aluminium primaire production base charbon', empreinte: 20, displayValue: '20 teqCO₂/t' },
+    { name: 'Aluminium primaire européen', empreinte: 7.65, displayValue: '6,7 - 8,6 teqCO₂/t' },
+    { name: 'Aluminium primaire français (décarbonée)', empreinte: 4.5, displayValue: '4,5 teqCO₂/t' },
+    { name: 'Aluminium bas carbone certifié Hydro REDUXA', empreinte: 4.0, displayValue: '4,0 teqCO₂/t' },
+    { name: 'Aluminium recyclé', empreinte: 0.51, displayValue: '0,5 - 0,52 teqCO₂/t' },
+];
+
 export const defaultSimulationState: SimulationState = {
   projectDescription: '',
   projectType: 'Travaux',
@@ -55,10 +63,12 @@ export const defaultSimulationState: SimulationState = {
   volumeBeton: 1000, // m³
   poidsAcier: 50, // tonnes
   poidsCuivre: 5, // tonnes
+  poidsAluminium: 5, // tonnes
   volumeEnrobes: 500, // m³
   volumeBetonEco: 1000,
   poidsAcierEco: 50,
   poidsCuivreEco: 5,
+  poidsAluminiumEco: 5,
   volumeEnrobesEco: 500,
 
   kmTransportMarchandises: 10000,
@@ -75,7 +85,9 @@ export const defaultSimulationState: SimulationState = {
   prixEnrobeChaud: 80,
   prixEnrobeFroid: 90,
   prixCuivreClassique: 9000,
-  prixCuivreRecycle: 8500, // Typically recycled is cheaper or similar
+  prixCuivreRecycle: 8500,
+  prixAluminiumClassique: 2500,
+  prixAluminiumBasCarbone: 3000,
   prixKmCamionDiesel: 1.5,
   prixKmCamionElectrique: 1.2,
   prixKmVoitureEssence: 0.5,
@@ -96,6 +108,7 @@ export const defaultSimulationState: SimulationState = {
   pctEcoBeton: 50,
   pctEcoAcier: 50,
   pctEcoCuivre: 50,
+  pctEcoAluminium: 50,
   pctEcoEnrobes: 50,
   pctEcoDeplacements: 50,
 
@@ -106,15 +119,18 @@ export const defaultSimulationState: SimulationState = {
 
   // Low carbon steel
   empreinteAcierBasCarbone: acierOptions[0].empreinte,
+
+  // Low carbon aluminium
+  empreinteAluminiumBasCarbone: aluminiumOptions[0].empreinte,
 };
 
 // Carbon footprints (in T eq CO₂ / unit)
 export const carbonFootprints = {
   betonClassique: 0.800, // tCO2eq/m3
-  acierClassique: 1.8, // T CO2 / tonne // This is now the default/fixed value for classic scenario
-  // acierBasCarbone is now dynamic based on user selection
+  acierClassique: 1.8, // T CO2 / tonne
   cuivreClassique: 4.5, // T CO2 / tonne
-  cuivreRecycle: 1.5, // T CO2 / tonne (recycled copper has lower footprint)
+  cuivreRecycle: 1.5, // T CO2 / tonne
+  aluminiumClassique: 20, // T CO2 / tonne
   enrobeChaud: 0.05, // T CO2 / m³ (assuming density ~1 t/m³)
   enrobeFroid: 0.02, // T CO2 / m³ (assuming density ~1 t/m³)
   camionDiesel: 0.25 / 1000, // T CO2 / km, converting from kg to t

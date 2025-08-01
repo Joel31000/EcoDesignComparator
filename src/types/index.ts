@@ -8,10 +8,12 @@ export interface SimulationState {
   volumeBeton: number;
   poidsAcier: number;
   poidsCuivre: number;
+  poidsAluminium: number;
   volumeEnrobes: number;
   volumeBetonEco: number; // For Eco and Mixed scenarios
   poidsAcierEco: number; // For Eco and Mixed scenarios
   poidsCuivreEco: number; // For Eco and Mixed scenarios
+  poidsAluminiumEco: number; // For Eco and Mixed scenarios
   volumeEnrobesEco: number; // For Eco and Mixed scenarios
 
   kmTransportMarchandises: number;
@@ -29,6 +31,8 @@ export interface SimulationState {
   prixEnrobeFroid: number;
   prixCuivreClassique: number;
   prixCuivreRecycle: number;
+  prixAluminiumClassique: number;
+  prixAluminiumBasCarbone: number;
   prixKmCamionDiesel: number;
   prixKmCamionElectrique: number;
   prixKmVoitureEssence: number;
@@ -49,6 +53,7 @@ export interface SimulationState {
   pctEcoBeton: number;
   pctEcoAcier: number;
   pctEcoCuivre: number;
+  pctEcoAluminium: number;
   pctEcoEnrobes: number;
   pctEcoDeplacements: number;
 
@@ -59,6 +64,9 @@ export interface SimulationState {
 
   // Low carbon steel type
   empreinteAcierBasCarbone: number;
+
+  // Low carbon aluminium type
+  empreinteAluminiumBasCarbone: number;
 }
 
 export interface BetonBasCarboneOption {
@@ -67,6 +75,12 @@ export interface BetonBasCarboneOption {
 }
 
 export interface AcierOption {
+  name: string;
+  empreinte: number;
+  displayValue: string;
+}
+
+export interface AluminiumOption {
   name: string;
   empreinte: number;
   displayValue: string;
@@ -92,6 +106,7 @@ export interface CalculationResults {
       beton: Breakdown;
       acier: Breakdown;
       cuivre: Breakdown;
+      aluminium: Breakdown;
       enrobes: Breakdown;
       transportMarchandises: Breakdown;
       deplacementsPersonnel: Breakdown;
@@ -112,6 +127,7 @@ export interface CalculationResults {
       beton: Breakdown;
       acier: Breakdown;
       cuivre: Breakdown;
+      aluminium: Breakdown;
       enrobes: Breakdown;
       transportMarchandises: Breakdown;
       deplacementsPersonnel: Breakdown;
@@ -134,6 +150,7 @@ export interface OptimizationOutput {
     pctEcoBeton: number;
     pctEcoAcier: number;
     pctEcoCuivre: number;
+    pctEcoAluminium: number;
     pctEcoEnrobes: number;
     pctEcoDeplacements: number;
   };

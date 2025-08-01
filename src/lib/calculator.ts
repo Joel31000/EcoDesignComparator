@@ -37,6 +37,14 @@ export function calculate(state: SimulationState): CalculationResults {
       state.pctEcoCuivre
   );
 
+  const coutAluminiumClassique = state.poidsAluminium * state.prixAluminiumClassique;
+  const coutAluminiumEco = state.poidsAluminiumEco * state.prixAluminiumBasCarbone;
+  const coutAluminiumMixte = calculateMixedValue(
+      coutAluminiumClassique,
+      coutAluminiumEco,
+      state.pctEcoAluminium
+  );
+
   const coutEnrobesClassique = state.volumeEnrobes * state.prixEnrobeChaud;
   const coutEnrobesEco = state.volumeEnrobesEco * state.prixEnrobeFroid;
   const coutEnrobesMixte = calculateMixedValue(
@@ -85,6 +93,14 @@ export function calculate(state: SimulationState): CalculationResults {
       state.pctEcoCuivre
   );
 
+  const carboneAluminiumClassique = state.poidsAluminium * carbonFootprints.aluminiumClassique;
+  const carboneAluminiumEco = state.poidsAluminiumEco * state.empreinteAluminiumBasCarbone;
+  const carboneAluminiumMixte = calculateMixedValue(
+      carboneAluminiumClassique,
+      carboneAluminiumEco,
+      state.pctEcoAluminium
+  );
+
   const carboneEnrobesClassique = state.volumeEnrobes * carbonFootprints.enrobeChaud;
   const carboneEnrobesEco = state.volumeEnrobesEco * carbonFootprints.enrobeFroid;
   const carboneEnrobesMixte = calculateMixedValue(
@@ -113,13 +129,13 @@ export function calculate(state: SimulationState): CalculationResults {
   const carboneEnginsMixte = carboneEnginsClassique;
 
   // Totals
-  const totalCoutClassique = coutBetonClassique + coutAcierClassique + coutCuivreClassique + coutEnrobesClassique + coutTransportMarchandisesClassique + coutDeplacementsPersonnelClassique + coutEnergieClassique;
-  const totalCoutEco = coutBetonEco + coutAcierEco + coutCuivreEco + coutEnrobesEco + coutTransportMarchandisesEco + coutDeplacementsPersonnelEco + coutEnergieEco;
-  const totalCoutMixte = coutBetonMixte + coutAcierMixte + coutCuivreMixte + coutEnrobesMixte + coutTransportMarchandisesMixte + coutDeplacementsPersonnelMixte + coutEnergieMixte;
+  const totalCoutClassique = coutBetonClassique + coutAcierClassique + coutCuivreClassique + coutAluminiumClassique + coutEnrobesClassique + coutTransportMarchandisesClassique + coutDeplacementsPersonnelClassique + coutEnergieClassique;
+  const totalCoutEco = coutBetonEco + coutAcierEco + coutCuivreEco + coutAluminiumEco + coutEnrobesEco + coutTransportMarchandisesEco + coutDeplacementsPersonnelEco + coutEnergieEco;
+  const totalCoutMixte = coutBetonMixte + coutAcierMixte + coutCuivreMixte + coutAluminiumMixte + coutEnrobesMixte + coutTransportMarchandisesMixte + coutDeplacementsPersonnelMixte + coutEnergieMixte;
 
-  const totalCarboneClassique = carboneBetonClassique + carboneAcierClassique + carboneCuivreClassique + carboneEnrobesClassique + carboneTransportMarchandisesClassique + carboneDeplacementsPersonnelClassique + carboneEnergieClassique + carboneEnginsClassique;
-  const totalCarboneEco = carboneBetonEco + carboneAcierEco + carboneCuivreEco + carboneEnrobesEco + carboneTransportMarchandisesEco + carboneDeplacementsPersonnelEco + carboneEnergieEco + carboneEnginsEco;
-  const totalCarboneMixte = carboneBetonMixte + carboneAcierMixte + carboneCuivreMixte + carboneEnrobesMixte + carboneTransportMarchandisesMixte + carboneDeplacementsPersonnelMixte + carboneEnergieMixte + carboneEnginsMixte;
+  const totalCarboneClassique = carboneBetonClassique + carboneAcierClassique + carboneCuivreClassique + carboneAluminiumClassique + carboneEnrobesClassique + carboneTransportMarchandisesClassique + carboneDeplacementsPersonnelClassique + carboneEnergieClassique + carboneEnginsClassique;
+  const totalCarboneEco = carboneBetonEco + carboneAcierEco + carboneCuivreEco + carboneAluminiumEco + carboneEnrobesEco + carboneTransportMarchandisesEco + carboneDeplacementsPersonnelEco + carboneEnergieEco + carboneEnginsEco;
+  const totalCarboneMixte = carboneBetonMixte + carboneAcierMixte + carboneCuivreMixte + carboneAluminiumMixte + carboneEnrobesMixte + carboneTransportMarchandisesMixte + carboneDeplacementsPersonnelMixte + carboneEnergieMixte + carboneEnginsMixte;
 
   // Savings & Extra Costs
   const surcout = totalCoutEco - totalCoutClassique;
@@ -147,6 +163,7 @@ export function calculate(state: SimulationState): CalculationResults {
         beton: calculateBreakdown(coutBetonClassique, coutBetonEco, coutBetonMixte),
         acier: calculateBreakdown(coutAcierClassique, coutAcierEco, coutAcierMixte),
         cuivre: calculateBreakdown(coutCuivreClassique, coutCuivreEco, coutCuivreMixte),
+        aluminium: calculateBreakdown(coutAluminiumClassique, coutAluminiumEco, coutAluminiumMixte),
         enrobes: calculateBreakdown(coutEnrobesClassique, coutEnrobesEco, coutEnrobesMixte),
         transportMarchandises: calculateBreakdown(coutTransportMarchandisesClassique, coutTransportMarchandisesEco, coutTransportMarchandisesMixte),
         deplacementsPersonnel: calculateBreakdown(coutDeplacementsPersonnelClassique, coutDeplacementsPersonnelEco, coutDeplacementsPersonnelMixte),
@@ -167,6 +184,7 @@ export function calculate(state: SimulationState): CalculationResults {
         beton: calculateBreakdown(carboneBetonClassique, carboneBetonEco, carboneBetonMixte),
         acier: calculateBreakdown(carboneAcierClassique, carboneAcierEco, carboneAcierMixte),
         cuivre: calculateBreakdown(carboneCuivreClassique, carboneCuivreEco, carboneCuivreMixte),
+        aluminium: calculateBreakdown(carboneAluminiumClassique, carboneAluminiumEco, carboneAluminiumMixte),
         enrobes: calculateBreakdown(carboneEnrobesClassique, carboneEnrobesEco, carboneEnrobesMixte),
         transportMarchandises: calculateBreakdown(carboneTransportMarchandisesClassique, carboneTransportMarchandisesEco, carboneTransportMarchandisesMixte),
         deplacementsPersonnel: calculateBreakdown(carboneDeplacementsPersonnelClassique, carboneDeplacementsPersonnelEco, carboneDeplacementsPersonnelMixte),

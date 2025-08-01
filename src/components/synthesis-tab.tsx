@@ -1,3 +1,4 @@
+
 'use client'
 
 import type { CalculationResults } from "@/types";
@@ -33,7 +34,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/([A-Z])/g, ' $1');
+const capitalize = (s: string) => {
+  if (s === 'transportMarchandises') return 'Transport Marchandises';
+  if (s === 'deplacementsPersonnel') return 'Déplacements Personnel';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 const PIE_CHART_COLORS = [
   "hsl(var(--chart-1))",
@@ -41,10 +46,12 @@ const PIE_CHART_COLORS = [
   "hsl(var(--chart-3))",
   "hsl(var(--chart-4))",
   "hsl(var(--chart-5))",
-  "#f97316",
-  "#f59e0b",
-  "#eab308"
+  "#f97316", // orange-500
+  "#f59e0b", // amber-500
+  "#eab308", // yellow-500
+  "#84cc16", // lime-500
 ];
+
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -61,7 +68,7 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-xs font-semibold">
+       <text x={cx} y={cy} dy={-14} textAnchor="middle" fill={'hsl(var(--foreground))'} className="text-xs font-semibold">
         {payload.name}
       </text>
       <Sector
@@ -84,11 +91,11 @@ const renderActiveShape = (props: any) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs font-bold">{payload.name}</text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={12} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={-12} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-sm font-bold">{payload.name}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" className="text-xs">
         {unit === '€' ? formatCurrency(value) : `${formatNumber(value)} ${unit}`}
       </text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={24} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={12} textAnchor={textAnchor} fill="hsl(var(--muted-foreground))" className="text-xs">
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
@@ -129,10 +136,10 @@ const DonutChartCard = ({ title, data, total, unit }: { title: string, data: { n
                     <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
               </Pie>
-               <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -40px)' }}>
+               <foreignObject x="50%" y="50%" width="120" height="70" style={{ transform: 'translate(-60px, -45px)' }}>
                  <div className="flex flex-col items-center justify-center h-full text-center">
                     <p className="text-xs text-muted-foreground">Total</p>
-                    <p className="font-bold text-base text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
+                    <p className="font-bold text-lg text-foreground mt-1">{unit === '€' ? formatCurrency(total) : `${formatNumber(total)} ${unit}`}</p>
                  </div>
               </foreignObject>
             </PieChart>
@@ -150,13 +157,14 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
   const barChartData = costCategories.map((key) => {
     const typedKey = key as keyof typeof cout.breakdown;
     const costBreakdown = cout.breakdown[typedKey];
+    
     let carbonData: { classique: number, mixte: number, eco: number } | undefined;
 
     if (key === 'engins') {
         const enginsData = carbone.breakdown.engins;
         carbonData = { classique: enginsData.classique, mixte: enginsData.mixte, eco: enginsData.eco };
     } else {
-        const breakdownData = carbone.breakdown[key as keyof Omit<typeof carbone.breakdown, 'engins'>];
+        const breakdownData = carbone.breakdown[key as keyof Omit<typeof carbone.breakdown, 'engins' | 'cuivre'>];
         if (breakdownData) {
             carbonData = { classique: breakdownData.classique, mixte: breakdownData.mixte, eco: breakdownData.eco };
         }
@@ -229,12 +237,13 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
         const carbonBreakdown = breakdown as typeof carbone.breakdown;
         data = Object.keys(carbonBreakdown)
           .filter(key => {
+              if (key === 'engins') return carbonBreakdown.engins[scenario as keyof typeof carbonBreakdown.engins] > 0;
               const typedKey = key as keyof typeof carbonBreakdown;
               const scenarioData = carbonBreakdown[typedKey];
-              if ('classique' in scenarioData) {
-                  return scenarioData[scenario] > 0;
+              if (scenarioData && typeof scenarioData === 'object' && scenario in scenarioData) {
+                  return (scenarioData as any)[scenario] > 0;
               }
-              return false; // engins doesn't have all scenarios
+              return false;
           })
           .map(key => {
               const typedKey = key as keyof typeof carbonBreakdown;
@@ -244,11 +253,6 @@ export function SynthesisTab({ results }: SynthesisTabProps) {
                   value: (scenarioData as any)[scenario],
               };
           });
-
-        // Handle 'engins' separately as it has a different structure
-        if (carbonBreakdown.engins[scenario as keyof typeof carbonBreakdown.engins] > 0) {
-            data.push({ name: 'Engins', value: carbonBreakdown.engins[scenario as keyof typeof carbonBreakdown.engins] });
-        }
       }
 
       return data;

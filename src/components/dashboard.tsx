@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, Sparkles } from 'lucide-react';
+import { Download, Loader2, Sparkles, BrainCircuit } from 'lucide-react';
 import { DataInputTab } from "./data-input-tab";
 import { ComparisonTab } from "./comparison-tab";
 import { SynthesisTab } from "./synthesis-tab";
@@ -13,6 +13,7 @@ import type { SimulationState, CalculationResults } from "@/types";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { OptimizationDialog } from './optimization-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 interface DashboardProps {
   state: SimulationState;
@@ -97,7 +98,27 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
               Synthèse &amp; Visualisation
             </TabsTrigger>
           </TabsList>
-          
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="py-3 text-base font-semibold shadow-sm"
+              >
+                <BrainCircuit className="mr-2" />
+                IA Helper
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => alert('Fonctionnalité à venir')}>
+                Recherche cimenteries de proximité
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => alert('Fonctionnalité à venir')}>
+                Recherche prix matériaux sélectionnés
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} />
 
         </div>

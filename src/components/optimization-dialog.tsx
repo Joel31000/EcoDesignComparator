@@ -57,7 +57,7 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
         duration: 5000,
       });
     } else {
-      // Allow dialog to open
+      // Allow dialog to open by not preventing default
     }
   };
 
@@ -144,7 +144,8 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
       <DialogTrigger asChild>
         <TriggerComponent
           onClick={handleOpenTrigger}
-          className={isMenuItem ? '' : `py-3 text-base text-foreground font-semibold shadow-md transition-all
+          onSelect={isEcoCheaper ? (e) => e.preventDefault() : undefined}
+          className={isMenuItem ? 'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50' : `py-3 text-base text-foreground font-semibold shadow-md transition-all
                      bg-purple-200 dark:bg-purple-800
                      hover:bg-purple-300 dark:hover:bg-purple-700
                      text-purple-900 dark:text-purple-100

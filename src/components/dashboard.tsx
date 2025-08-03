@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { useState } from 'react';
@@ -15,6 +13,7 @@ import html2canvas from 'html2canvas';
 import { OptimizationDialog } from './optimization-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { CementPlantsDialog } from './cement-plants-dialog';
+import { MaterialPricesDialog } from './material-prices-dialog';
 
 interface DashboardProps {
   state: SimulationState;
@@ -115,9 +114,7 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
                   projectLocation={state.projectLocation}
                   projectGpsCoordinates={state.projectGpsCoordinates}
                 />
-              <DropdownMenuItem onClick={() => alert('Fonctionnalité à venir')}>
-                Recherche prix matériaux sélectionnés
-              </DropdownMenuItem>
+              <MaterialPricesDialog simulationState={state} />
             </DropdownMenuContent>
           </DropdownMenu>
 

@@ -9,7 +9,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { Tool } from 'genkit/tool';
 
 // Define Zod schemas for input and output
 const FindCementPlantsInputSchema = z.object({
@@ -31,12 +30,14 @@ const FindCementPlantsOutputSchema = z.object({
 export type FindCementPlantsOutput = z.infer<typeof FindCementPlantsOutputSchema>;
 
 // Define the search tool
-const searchTool: Tool = {
-  name: 'internetSearch',
-  description: 'Recherche sur internet pour trouver des informations.',
-  inputSchema: z.object({ query: z.string() }),
-  outputSchema: z.any(),
-  async execute(input) {
+const searchTool = ai.defineTool(
+  {
+    name: 'internetSearch',
+    description: 'Recherche sur internet pour trouver des informations.',
+    inputSchema: z.object({ query: z.string() }),
+    outputSchema: z.any(),
+  },
+  async (input) => {
     // In a real implementation, this would call a search engine API.
     // For this example, we simulate a search call.
     console.log(`Simulating internet search for: ${input.query}`);
@@ -49,8 +50,8 @@ const searchTool: Tool = {
     return {
         results: `Résultats de recherche simulés pour "${input.query}". Dans une vraie application, cela renverrait des données réelles.`
     }
-  },
-};
+  }
+);
 
 
 // Define the prompt

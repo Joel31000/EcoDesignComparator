@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, BrainCircuit } from 'lucide-react';
+import { Download, Loader2, Sparkles } from 'lucide-react';
 import { DataInputTab } from "./data-input-tab";
 import { ComparisonTab } from "./comparison-tab";
 import { SynthesisTab } from "./synthesis-tab";
@@ -13,7 +13,6 @@ import type { SimulationState, CalculationResults } from "@/types";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { OptimizationDialog } from './optimization-dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 interface DashboardProps {
   state: SimulationState;
@@ -99,19 +98,7 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
             </TabsTrigger>
           </TabsList>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="text-base font-semibold">
-                <BrainCircuit className="mr-2 h-5 w-5 text-purple-400" />
-                IA Helper
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Recherche cimenteries de proximité</DropdownMenuItem>
-              <DropdownMenuItem>Recherche prix matériaux sélectionnés</DropdownMenuItem>
-              <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} isMenuItem={true}/>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} />
 
         </div>
 

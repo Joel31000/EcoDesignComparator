@@ -22,21 +22,19 @@ import { optimizeDesign } from '@/ai/flows/optimize-design';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { DropdownMenuItem } from './ui/dropdown-menu';
 
 
 interface OptimizationDialogProps {
   simulationState: SimulationState;
   calculationResults: CalculationResults;
   onStateChange: (newState: Partial<SimulationState>) => void;
-  isMenuItem?: boolean;
 }
 
 const formatCurrency = (value: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(value);
 
 
-export function OptimizationDialog({ simulationState, calculationResults, onStateChange, isMenuItem }: OptimizationDialogProps) {
+export function OptimizationDialog({ simulationState, calculationResults, onStateChange }: OptimizationDialogProps) {
   const [open, setOpen] = useState(false);
   const [maxSurcout, setMaxSurcout] = useState<number | string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -137,23 +135,20 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
     doc.save('rapport_optimisation_design.pdf');
   }
 
-  const TriggerComponent = isMenuItem ? DropdownMenuItem : Button;
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <TriggerComponent
+        <Button
           onClick={handleOpenTrigger}
-          onSelect={isEcoCheaper ? (e) => e.preventDefault() : undefined}
-          className={isMenuItem ? 'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50' : `py-3 text-base text-foreground font-semibold shadow-md transition-all
+          className="py-3 text-base text-foreground font-semibold shadow-md transition-all
                      bg-purple-200 dark:bg-purple-800
                      hover:bg-purple-300 dark:hover:bg-purple-700
                      text-purple-900 dark:text-purple-100
-                     data-[state=active]:scale-105`}
+                     data-[state=active]:scale-105"
         >
           <Sparkles className="mr-2" />
           Optimisation du design
-        </TriggerComponent>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

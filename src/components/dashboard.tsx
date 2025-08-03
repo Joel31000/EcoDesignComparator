@@ -14,6 +14,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { OptimizationDialog } from './optimization-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { CementPlantsDialog } from './cement-plants-dialog';
 
 interface DashboardProps {
   state: SimulationState;
@@ -110,9 +111,10 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => alert('Fonctionnalité à venir')}>
-                Recherche cimenteries de proximité
-              </DropdownMenuItem>
+              <CementPlantsDialog 
+                  projectLocation={state.projectLocation}
+                  projectGpsCoordinates={state.projectGpsCoordinates}
+                />
               <DropdownMenuItem onClick={() => alert('Fonctionnalité à venir')}>
                 Recherche prix matériaux sélectionnés
               </DropdownMenuItem>

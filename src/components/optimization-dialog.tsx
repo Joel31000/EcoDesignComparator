@@ -22,19 +22,21 @@ import { optimizeDesign } from '@/ai/flows/optimize-design';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { DropdownMenuItem } from './ui/dropdown-menu';
 
 
 interface OptimizationDialogProps {
   simulationState: SimulationState;
   calculationResults: CalculationResults;
   onStateChange: (newState: Partial<SimulationState>) => void;
+  isMenuItem?: boolean;
 }
 
 const formatCurrency = (value: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(value);
 
 
-export function OptimizationDialog({ simulationState, calculationResults, onStateChange }: OptimizationDialogProps) {
+export function OptimizationDialog({ simulationState, calculationResults, onStateChange, isMenuItem }: OptimizationDialogProps) {
   const [open, setOpen] = useState(false);
   const [maxSurcout, setMaxSurcout] = useState<number | string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -43,10 +45,11 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
 
   const isEcoCheaper = calculationResults.cout.coutGlobalEcoAjuste <= calculationResults.cout.totalClassique;
 
-  const handleOpenTrigger = () => {
+  const handleOpenTrigger = (e: React.MouseEvent) => {
     setResult(null);
     setMaxSurcout('');
     if (isEcoCheaper) {
+      e.preventDefault();
       toast({
         title: 'Optimisation non nécessaire',
         description: 'Le design "Éco-conception" est déjà plus économique que le design classique. Vous réalisez déjà des économies !',
@@ -54,7 +57,7 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
         duration: 5000,
       });
     } else {
-      setOpen(true);
+      // Allow dialog to open
     }
   };
 
@@ -134,20 +137,22 @@ export function OptimizationDialog({ simulationState, calculationResults, onStat
     doc.save('rapport_optimisation_design.pdf');
   }
 
+  const TriggerComponent = isMenuItem ? DropdownMenuItem : Button;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
+        <TriggerComponent
           onClick={handleOpenTrigger}
-          className="py-3 text-base text-foreground font-semibold shadow-md transition-all
+          className={isMenuItem ? '' : `py-3 text-base text-foreground font-semibold shadow-md transition-all
                      bg-purple-200 dark:bg-purple-800
                      hover:bg-purple-300 dark:hover:bg-purple-700
                      text-purple-900 dark:text-purple-100
-                     data-[state=active]:scale-105"
+                     data-[state=active]:scale-105`}
         >
           <Sparkles className="mr-2" />
           Optimisation du design
-        </Button>
+        </TriggerComponent>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

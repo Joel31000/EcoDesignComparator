@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, BrainCircuit } from 'lucide-react';
 import { DataInputTab } from "./data-input-tab";
 import { ComparisonTab } from "./comparison-tab";
 import { SynthesisTab } from "./synthesis-tab";
@@ -12,6 +13,7 @@ import type { SimulationState, CalculationResults } from "@/types";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { OptimizationDialog } from './optimization-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 interface DashboardProps {
   state: SimulationState;
@@ -72,30 +74,47 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
   return (
     <Tabs defaultValue="data-input" className="w-full" onValueChange={setActiveTab}>
       <div className="flex items-center justify-between mb-8">
-        <TabsList className="bg-transparent p-0 gap-1">
-          <TabsTrigger 
-            value="data-input" 
-            className="text-base text-muted-foreground font-semibold transition-all
-                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
-            Données d'Entrée
-          </TabsTrigger>
-          <TabsTrigger 
-            value="comparison" 
-            className="text-base text-muted-foreground font-semibold transition-all
-                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
-            Comparaison Détaillée
-          </TabsTrigger>
-          <TabsTrigger 
-            value="synthesis" 
-            className="text-base text-muted-foreground font-semibold transition-all
-                       data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
-            Synthèse &amp; Visualisation
-          </TabsTrigger>
-          <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange}/>
-        </TabsList>
+        <div className="flex items-center gap-4">
+          <TabsList className="bg-transparent p-0 gap-1">
+            <TabsTrigger 
+              value="data-input" 
+              className="text-base text-muted-foreground font-semibold transition-all
+                        data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Données d'Entrée
+            </TabsTrigger>
+            <TabsTrigger 
+              value="comparison" 
+              className="text-base text-muted-foreground font-semibold transition-all
+                        data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Comparaison Détaillée
+            </TabsTrigger>
+            <TabsTrigger 
+              value="synthesis" 
+              className="text-base text-muted-foreground font-semibold transition-all
+                        data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Synthèse &amp; Visualisation
+            </TabsTrigger>
+          </TabsList>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="text-base font-semibold">
+                <BrainCircuit className="mr-2 h-5 w-5 text-purple-400" />
+                IA Helper
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Recherche cimenteries de proximité</DropdownMenuItem>
+              <DropdownMenuItem>Recherche prix matériaux sélectionnés</DropdownMenuItem>
+              <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} isMenuItem={true}/>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+        </div>
+
          <div>
             <Button onClick={handleExportToPDF} disabled={isExporting}>
                 {isExporting ? (

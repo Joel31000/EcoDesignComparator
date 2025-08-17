@@ -153,7 +153,7 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                 <MaterialInputField label="Acier" idClassique="poidsAcier" idEco="poidsAcierEco" valueClassique={state.poidsAcier} valueEco={state.poidsAcierEco} unit="tonnes" onChange={handleInputChange} />
                 <MaterialInputField label="Cuivre" idClassique="poidsCuivre" idEco="poidsCuivreEco" valueClassique={state.poidsCuivre} valueEco={state.poidsCuivreEco} unit="tonnes" onChange={handleInputChange} />
                 <MaterialInputField label="Aluminium" idClassique="poidsAluminium" idEco="poidsAluminiumEco" valueClassique={state.poidsAluminium} valueEco={state.poidsAluminiumEco} unit="tonnes" onChange={handleInputChange} />
-                <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m³" onChange={handleInputChange} />
+                <MaterialInputField label="Enrobés" idClassique="volumeEnrobes" idEco="volumeEnrobesEco" valueClassique={state.volumeEnrobes} valueEco={state.volumeEnrobesEco} unit="m²" onChange={handleInputChange} />
             </div>
           </CardContent>
         </Card>
@@ -294,18 +294,24 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <div className="space-y-4">
               <InputField label="Prix Béton Classique" id="prixBetonClassique" value={state.prixBetonClassique} unit="€/m³" onChange={handleInputChange} />
               <InputField label="Prix Béton Bas Carbone" id="prixBetonBasCarbone" value={state.prixBetonBasCarbone} unit="€/m³" onChange={handleInputChange} />
+            </div>
+            <div className="space-y-4">
               <InputField label="Prix Acier Classique" id="prixAcierClassique" value={state.prixAcierClassique} unit="€/t" onChange={handleInputChange} />
               <InputField label="Prix Acier Bas Carbone" id="prixAcierBasCarbone" value={state.prixAcierBasCarbone} unit="€/t" onChange={handleInputChange} />
             </div>
             <div className="space-y-4">
               <InputField label="Prix Cuivre Classique" id="prixCuivreClassique" value={state.prixCuivreClassique} unit="€/t" onChange={handleInputChange} />
               <InputField label="Prix Cuivre Recyclé" id="prixCuivreRecycle" value={state.prixCuivreRecycle} unit="€/t" onChange={handleInputChange} />
+            </div>
+            <div className="space-y-4">
               <InputField label="Prix Aluminium Classique" id="prixAluminiumClassique" value={state.prixAluminiumClassique} unit="€/t" onChange={handleInputChange} />
               <InputField label="Prix Aluminium Bas Carbone" id="prixAluminiumBasCarbone" value={state.prixAluminiumBasCarbone} unit="€/t" onChange={handleInputChange} />
             </div>
             <div className="space-y-4">
               <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
               <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
+            </div>
+            <div className="space-y-4">
               <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
             </div>
         </CardContent>
@@ -328,3 +334,5 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
     </div>
   );
 }
+
+    

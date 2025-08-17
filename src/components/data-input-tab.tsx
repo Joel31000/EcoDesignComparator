@@ -308,8 +308,8 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
               <InputField label="Prix Aluminium Bas Carbone" id="prixAluminiumBasCarbone" value={state.prixAluminiumBasCarbone} unit="€/t" onChange={handleInputChange} />
             </div>
             <div className="space-y-4">
-              <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m³" onChange={handleInputChange} />
-              <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m³" onChange={handleInputChange} />
+              <InputField label="Prix Enrobé à Chaud" id="prixEnrobeChaud" value={state.prixEnrobeChaud} unit="€/m²" onChange={handleInputChange} />
+              <InputField label="Prix Enrobé à Froid" id="prixEnrobeFroid" value={state.prixEnrobeFroid} unit="€/m²" onChange={handleInputChange} />
             </div>
             <div className="space-y-4">
               <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
@@ -334,5 +334,3 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
     </div>
   );
 }
-
-    

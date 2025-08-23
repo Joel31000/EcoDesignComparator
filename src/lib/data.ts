@@ -80,6 +80,8 @@ export const defaultSimulationState: SimulationState = {
   prixKwhDiesel: 0.25,
   prixBetonClassique: 150,
   prixBetonBasCarbone: 180,
+  prixArmatureAcierClassique: 0.6,
+  prixArmatureAcierEco: 0.6,
   prixAcierClassique: 865,
   prixAcierBasCarbone: 925,
   prixEnrobeChaud: 80,

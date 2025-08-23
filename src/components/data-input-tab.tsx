@@ -388,6 +388,10 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
             <div className="space-y-4">
               <InputField label="Prix horaire Hélicoptère" id="prixHeureHelicoptere" value={state.prixHeureHelicoptere} unit="€/heure" onChange={handleInputChange} />
             </div>
+            <div className="space-y-4">
+              <InputField label="Prix armature acier classique" id="prixArmatureAcierClassique" value={state.prixArmatureAcierClassique} unit="€/Kg" onChange={handleInputChange} />
+              <InputField label="Prix armature éco-conception" id="prixArmatureAcierEco" value={state.prixArmatureAcierEco} unit="€/Kg" onChange={handleInputChange} />
+            </div>
         </CardContent>
       </Card>
 

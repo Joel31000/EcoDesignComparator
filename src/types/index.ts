@@ -25,6 +25,8 @@ export interface SimulationState {
   prixKwhDiesel: number;
   prixBetonClassique: number;
   prixBetonBasCarbone: number;
+  prixArmatureAcierClassique: number;
+  prixArmatureAcierEco: number;
   prixAcierClassique: number;
   prixAcierBasCarbone: number;
   prixEnrobeChaud: number;

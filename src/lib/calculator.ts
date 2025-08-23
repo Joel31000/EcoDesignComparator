@@ -11,15 +11,32 @@ const calculateMixedValue = (classiqueValue: number, ecoValue: number, pctEco: n
 }
 
 export function calculate(state: SimulationState): CalculationResults {
+  // Armature cost calculation
+  const surcoutArmatureBetonClassique = state.isBetonArme
+    ? state.masseFerraillage * state.prixArmatureAcierClassique * state.volumeBeton
+    : 0;
+
+  const surcoutArmatureBetonEco = state.isBetonArme
+    ? state.masseFerraillage * state.prixArmatureAcierEco * state.volumeBetonEco
+    : 0;
+  
   // Cost Calculations
   // The cost of a material depends on its type (classic/eco) and its quantity (classic/eco)
-  const coutBetonClassique = state.volumeBeton * state.prixBetonClassique;
-  const coutBetonEco = state.volumeBetonEco * state.prixBetonBasCarbone;
+  const coutBetonClassique = state.volumeBeton * state.prixBetonClassique + surcoutArmatureBetonClassique;
+  const coutBetonEco = state.volumeBetonEco * state.prixBetonBasCarbone + surcoutArmatureBetonEco;
+  
+  // For the mixed scenario, we need to calculate the cost of rebar for both the classic and eco portions
+  const coutArmatureMixte = state.isBetonArme
+    ? (state.volumeBeton * (1 - state.pctEcoBeton / 100) * state.masseFerraillage * state.prixArmatureAcierClassique) +
+      (state.volumeBetonEco * (state.pctEcoBeton / 100) * state.masseFerraillage * state.prixArmatureAcierEco)
+    : 0;
+    
   const coutBetonMixte = calculateMixedValue(
       state.volumeBeton * state.prixBetonClassique,
       state.volumeBetonEco * state.prixBetonBasCarbone,
       state.pctEcoBeton
-  );
+  ) + coutArmatureMixte;
+
 
   const coutAcierClassique = state.poidsAcier * state.prixAcierClassique;
   const coutAcierEco = state.poidsAcierEco * state.prixAcierBasCarbone;

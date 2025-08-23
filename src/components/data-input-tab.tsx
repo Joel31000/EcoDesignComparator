@@ -88,6 +88,8 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
         masseFerraillage: checked ? 100 : 0
       });
   }
+  
+  const armatureEmissionOptions = Array.from({ length: 21 }, (_, i) => (i * 0.1).toFixed(1));
 
 
   return (
@@ -257,27 +259,43 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                             </div>
                         </div>
 
-                        <PercentageSlider 
-                          label="Facteur d'émission armature (Classique)" 
-                          id="facteurEmissionArmatureClassique" 
-                          value={state.facteurEmissionArmatureClassique} 
-                          onSliderChange={onSliderChange}
-                          min={0}
-                          max={2}
-                          step={0.1}
-                          unit=" kgCO₂eq/kg"
-                        />
+                        <div className="space-y-2">
+                            <Label htmlFor="facteurEmissionArmatureClassique">Facteur d'émission armature (Classique)</Label>
+                            <Select
+                                value={String(state.facteurEmissionArmatureClassique)}
+                                onValueChange={(value) => onStateChange({ facteurEmissionArmatureClassique: Number(value) })}
+                            >
+                                <SelectTrigger id="facteurEmissionArmatureClassique">
+                                    <SelectValue placeholder="Sélectionner une valeur" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {armatureEmissionOptions.map(option => (
+                                        <SelectItem key={option} value={option}>
+                                            {option} kgCO₂eq/kg
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        <PercentageSlider 
-                          label="Facteur d'émission armature (Éco)" 
-                          id="facteurEmissionArmatureEco" 
-                          value={state.facteurEmissionArmatureEco} 
-                          onSliderChange={onSliderChange}
-                          min={0}
-                          max={2}
-                          step={0.1}
-                          unit=" kgCO₂eq/kg"
-                        />
+                        <div className="space-y-2">
+                            <Label htmlFor="facteurEmissionArmatureEco">Facteur d'émission armature (Éco)</Label>
+                             <Select
+                                value={String(state.facteurEmissionArmatureEco)}
+                                onValueChange={(value) => onStateChange({ facteurEmissionArmatureEco: Number(value) })}
+                            >
+                                <SelectTrigger id="facteurEmissionArmatureEco">
+                                    <SelectValue placeholder="Sélectionner une valeur" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {armatureEmissionOptions.map(option => (
+                                        <SelectItem key={option} value={option}>
+                                            {option} kgCO₂eq/kg
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </div>
               </>

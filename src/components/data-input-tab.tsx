@@ -50,19 +50,19 @@ const MaterialInputField = ({ label, idClassique, idEco, valueClassique, valueEc
 );
 
 
-const PercentageSlider = ({ label, id, value, onSliderChange }: { label: string, id: keyof SimulationState, value: number, onSliderChange: (key: keyof SimulationState, value: number[]) => void }) => (
+const PercentageSlider = ({ label, id, value, onSliderChange, step=1, min=0, max=100, unit="%" }: { label: string, id: keyof SimulationState, value: number, onSliderChange: (key: keyof SimulationState, value: number[]) => void, step?: number, min?: number, max?: number, unit?: string }) => (
   <div>
     <div className="flex justify-between items-center mb-1">
       <Label htmlFor={id} className="text-sm">{label}</Label>
-      <span className="text-sm font-semibold text-primary">{value}%</span>
+      <span className="text-sm font-semibold text-primary">{value}{unit}</span>
     </div>
     <Slider
       id={id}
       value={[value]}
       onValueChange={(val) => onSliderChange(id, val)}
-      min={0}
-      max={100}
-      step={1}
+      min={min}
+      max={max}
+      step={step}
     />
   </div>
 );
@@ -80,6 +80,14 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
   const handleStringInputChange = (id: keyof SimulationState, value: string) => {
     onStateChange({ [id]: value });
   };
+
+  const handleBetonArmeChange = (checked: boolean) => {
+      onStateChange({ 
+        isBetonArme: checked,
+        // Set default rebar mass when checked, 0 when unchecked
+        masseFerraillage: checked ? 100 : 0
+      });
+  }
 
 
   return (
@@ -187,8 +195,8 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
           <CardDescription>Paramètres spécifiques aux matériaux bas-carbone.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-x-8 gap-y-4 items-end">
-                <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 items-end">
+                <div className="space-y-2 col-span-1 md:col-span-2 lg:col-span-1">
                     <Label htmlFor="betonBasCarboneEmpreinte">Type béton bas carbone</Label>
                     <Select
                         value={String(state.betonBasCarboneEmpreinte)}
@@ -206,13 +214,6 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                         </SelectContent>
                     </Select>
                 </div>
-                
-                <div className="flex items-center space-x-2 pb-2 justify-center">
-                    <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={(checked) => onStateChange({ isBetonArme: !!checked })} />
-                    <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none">
-                        Béton armé
-                    </Label>
-                </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="masseBetonBasCarbone">Masse ciment dans formulation</Label>
@@ -227,9 +228,64 @@ export function DataInputTab({ state, onStateChange, onSliderChange }: DataInput
                     <span className="text-sm text-muted-foreground">Kg</span>
                     </div>
                 </div>
+
+                <div className="flex items-center space-x-2 pb-2 justify-start md:justify-center">
+                    <Checkbox id="isBetonArme" checked={state.isBetonArme} onCheckedChange={handleBetonArmeChange} />
+                    <Label htmlFor="isBetonArme" className="text-sm font-medium leading-none">
+                        Béton armé
+                    </Label>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            {state.isBetonArme && (
+              <>
+                <Separator/>
+                <div className="space-y-6 pt-2">
+                    <h4 className="text-base font-medium text-center">Paramètres du Béton Armé</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="masseFerraillage">Masse de ferraillage</Label>
+                            <div className="flex items-center gap-2">
+                            <Input
+                                id="masseFerraillage"
+                                type="number"
+                                value={state.masseFerraillage}
+                                onChange={(e) => handleInputChange("masseFerraillage", e.target.value)}
+                                className="flex-grow"
+                            />
+                            <span className="text-sm text-muted-foreground">Kg/m³</span>
+                            </div>
+                        </div>
+
+                        <PercentageSlider 
+                          label="Facteur d'émission armature (Classique)" 
+                          id="facteurEmissionArmatureClassique" 
+                          value={state.facteurEmissionArmatureClassique} 
+                          onSliderChange={onSliderChange}
+                          min={0}
+                          max={2}
+                          step={0.1}
+                          unit=" kgCO₂eq/kg"
+                        />
+
+                        <PercentageSlider 
+                          label="Facteur d'émission armature (Éco)" 
+                          id="facteurEmissionArmatureEco" 
+                          value={state.facteurEmissionArmatureEco} 
+                          onSliderChange={onSliderChange}
+                          min={0}
+                          max={2}
+                          step={0.1}
+                          unit=" kgCO₂eq/kg"
+                        />
+                    </div>
+                </div>
+              </>
+            )}
+
+            <Separator/>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 pt-2">
                 <div className="space-y-2">
                     <Label htmlFor="empreinteAcierBasCarbone">Type d'acier/procédé</Label>
                     <Select

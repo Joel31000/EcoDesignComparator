@@ -61,6 +61,9 @@ export interface SimulationState {
   betonBasCarboneEmpreinte: number;
   masseBetonBasCarbone: number;
   isBetonArme: boolean;
+  masseFerraillage: number;
+  facteurEmissionArmatureClassique: number;
+  facteurEmissionArmatureEco: number;
 
   // Low carbon steel type
   empreinteAcierBasCarbone: number;

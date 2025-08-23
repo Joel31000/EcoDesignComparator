@@ -117,8 +117,8 @@ export const defaultSimulationState: SimulationState = {
   masseBetonBasCarbone: 350, // kg
   isBetonArme: false,
   masseFerraillage: 100, // kg/m3
-  facteurEmissionArmatureClassique: 1.15, // kgCO2eq/kg
-  facteurEmissionArmatureEco: 1.15, // kgCO2eq/kg
+  facteurEmissionArmatureClassique: 1.2, // kgCO2eq/kg
+  facteurEmissionArmatureEco: 1.2, // kgCO2eq/kg
 
   // Low carbon steel
   empreinteAcierBasCarbone: acierOptions[0].empreinte,

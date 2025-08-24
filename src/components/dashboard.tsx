@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, Sparkles, BrainCircuit } from 'lucide-react';
+import { Download, Loader2, BrainCircuit } from 'lucide-react';
 import { DataInputTab } from "./data-input-tab";
 import { ComparisonTab } from "./comparison-tab";
 import { SynthesisTab } from "./synthesis-tab";
@@ -14,6 +14,7 @@ import { OptimizationDialog } from './optimization-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { CementPlantsDialog } from './cement-plants-dialog';
 import { MaterialPricesDialog } from './material-prices-dialog';
+import { HelpPopover } from './help-popover';
 
 interface DashboardProps {
   state: SimulationState;
@@ -110,6 +111,7 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
+              <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} isMenuItem={true} />
               <CementPlantsDialog 
                   projectLocation={state.projectLocation}
                   projectGpsCoordinates={state.projectGpsCoordinates}
@@ -118,11 +120,9 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <OptimizationDialog simulationState={state} calculationResults={results} onStateChange={onStateChange} />
-
         </div>
 
-         <div>
+         <div className="flex items-center gap-2">
             <Button onClick={handleExportToPDF} disabled={isExporting}>
                 {isExporting ? (
                     <Loader2 className="animate-spin" />
@@ -133,6 +133,7 @@ export function Dashboard({ state, onStateChange, onSliderChange, results }: Das
                     {isExporting ? 'Export en cours...' : 'Téléchargement en PDF'}
                 </span>
             </Button>
+            <HelpPopover />
         </div>
       </div>
       <TabsContent value="data-input" id="data-input">
